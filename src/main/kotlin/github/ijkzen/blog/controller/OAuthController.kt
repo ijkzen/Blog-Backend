@@ -1,7 +1,5 @@
-package github.ijkzen.blog
+package github.ijkzen.blog.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import github.ijkzen.blog.bean.Developer
 import github.ijkzen.blog.bean.GithubEmail
 import github.ijkzen.blog.bean.GithubToken
@@ -26,8 +24,8 @@ class OAuthController {
     fun getToken(@RequestParam("code") code: String) {
         val token = restTemplate.getForObject(
                 "https://github.com/login/oauth/access_token?" +
-                        "client_id=${CLIENT_ID}" +
-                        "&client_secret=${CLIENT_SECRET}" +
+                        "client_id=$CLIENT_ID" +
+                        "&client_secret=$CLIENT_SECRET" +
                         "&code=${code}",
                 GithubToken::class.java
         )
