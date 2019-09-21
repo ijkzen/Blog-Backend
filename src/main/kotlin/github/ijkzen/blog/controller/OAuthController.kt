@@ -26,7 +26,7 @@ class OAuthController {
                 "https://github.com/login/oauth/access_token?" +
                         "client_id=$CLIENT_ID" +
                         "&client_secret=$CLIENT_SECRET" +
-                        "&code=${code}",
+                        "&code=$code",
                 GithubToken::class.java
         )
 
@@ -50,6 +50,8 @@ class OAuthController {
 
         if (developer.email.isNullOrEmpty()) {
             getDeveloperEmail(developer)
+        } else {
+            System.err.println(developer)
         }
     }
 

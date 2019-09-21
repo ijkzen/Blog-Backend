@@ -29,13 +29,13 @@ data class Developer(
         var followersUrl: String?,
 
         @JsonProperty("following_url")
-        var following_url: String?,
+        var followingUrl: String?,
 
         @JsonProperty("gists_url")
         var gistsUrl: String?,
 
         @JsonProperty("starred_url")
-        var starred_url:String?,
+        var starredUrl:String?,
 
         @JsonProperty("subscriptions_url")
         var subscriptionsUrl: String?,
