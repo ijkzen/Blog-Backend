@@ -2,8 +2,10 @@ package github.ijkzen.blog.service
 
 import github.ijkzen.blog.bean.github.Developer
 import github.ijkzen.blog.repository.DeveloperRepository
+import github.ijkzen.blog.utils.MASTER_ID
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.io.File
 
 @Service
 class DeveloperService {
@@ -13,5 +15,9 @@ class DeveloperService {
 
     fun save(developer: Developer) {
         repository.save(developer)
+    }
+
+    fun searchMaster(): Developer {
+        return repository.findById(File(MASTER_ID).readText().toLong()).get()
     }
 }

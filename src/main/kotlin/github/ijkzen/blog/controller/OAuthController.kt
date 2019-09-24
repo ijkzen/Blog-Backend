@@ -3,7 +3,9 @@ package github.ijkzen.blog.controller
 import github.ijkzen.blog.bean.github.Developer
 import github.ijkzen.blog.bean.github.GithubEmail
 import github.ijkzen.blog.bean.github.GithubToken
+import github.ijkzen.blog.bean.github.Repository
 import github.ijkzen.blog.service.DeveloperService
+import github.ijkzen.blog.utils.MASTER_ID
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
+import java.io.File
 import java.util.*
 
 const val CLIENT_ID = "280efb2391f54e4992d7"
@@ -38,10 +41,8 @@ class OAuthController {
     }
 
     private fun getDeveloperInfo(token: String) {
-        val headers = HttpHeaders()
-        headers.accept = Collections.singletonList(MediaType.APPLICATION_JSON)
-        headers.set("Authorization", "token $token")
-        val entity = HttpEntity("body", headers)
+
+        val entity = HttpEntity("", getGithubHeaders(token))
         val result = restTemplate.exchange(
                 "https://api.github.com/user",
                 HttpMethod.GET,
@@ -51,20 +52,18 @@ class OAuthController {
 
         val developer = result.body!!
         developer.token = token
-
+        File(MASTER_ID).writeText(developer.developerId.toString())
         if (developer.email.isNullOrEmpty()) {
             getDeveloperEmail(developer)
         } else {
             developerService.save(developer)
-            System.err.println(developer)
+            createBlogRepository()
         }
     }
 
     private fun getDeveloperEmail(developer: Developer) {
-        val headers = HttpHeaders()
-        headers.accept = Collections.singletonList(MediaType.APPLICATION_JSON)
-        headers.set("Authorization", "token ${developer.token}")
-        val entity = HttpEntity("body", headers)
+
+        val entity = HttpEntity("", getGithubHeaders(developer.token!!))
         val email = restTemplate.exchange(
                 "https://api.github.com/user/emails",
                 HttpMethod.GET,
@@ -74,7 +73,27 @@ class OAuthController {
 
         developer.email = email.body!!.find { it.primary }!!.email
         developerService.save(developer)
-        System.err.println(developer)
+        createBlogRepository()
+    }
+
+    private fun getGithubHeaders(token: String): HttpHeaders {
+        val headers = HttpHeaders()
+        return headers.apply {
+            accept = Collections.singletonList(MediaType.APPLICATION_JSON)
+            set("Authorization", "token $token")
+        }
+    }
+
+    private fun createBlogRepository() {
+        val developer = developerService.searchMaster()
+        val repository = Repository("articles")
+        val entity = HttpEntity<Repository>(repository, getGithubHeaders(developer.token!!))
+        val rsp = restTemplate.postForObject(
+                "https://api.github.com//user/repos",
+                entity,
+                String::class.java
+        )
+        System.err.println(rsp)
     }
 
 }
