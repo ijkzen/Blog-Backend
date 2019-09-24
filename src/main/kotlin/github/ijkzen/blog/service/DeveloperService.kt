@@ -1,6 +1,6 @@
 package github.ijkzen.blog.service
 
-import github.ijkzen.blog.bean.github.Developer
+import github.ijkzen.blog.bean.github.response.Developer
 import github.ijkzen.blog.repository.DeveloperRepository
 import github.ijkzen.blog.utils.MASTER_ID
 import org.springframework.beans.factory.annotation.Autowired

@@ -1,13 +1,14 @@
 package github.ijkzen.blog.controller
 
-import github.ijkzen.blog.bean.github.Developer
-import github.ijkzen.blog.bean.github.GithubEmail
-import github.ijkzen.blog.bean.github.GithubToken
-import github.ijkzen.blog.bean.github.Repository
+import github.ijkzen.blog.bean.github.request.RepositoryResponse
+import github.ijkzen.blog.bean.github.response.Developer
+import github.ijkzen.blog.bean.github.response.GithubEmail
+import github.ijkzen.blog.bean.github.response.GithubToken
 import github.ijkzen.blog.service.DeveloperService
 import github.ijkzen.blog.utils.CLIENT_ID
 import github.ijkzen.blog.utils.CLIENT_SECRET
 import github.ijkzen.blog.utils.MASTER_ID
+import github.ijkzen.blog.utils.REPOSITORY_NAME
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -85,15 +86,31 @@ class OAuthController {
     }
 
     private fun createBlogRepository() {
+        if (isExistRepository()) {
+            System.err.println("articles repository exist")
+        } else {
+            val developer = developerService.searchMaster()
+            val repository = RepositoryResponse(REPOSITORY_NAME)
+            val entity = HttpEntity(repository, getGithubHeaders(developer.token!!))
+            val rsp = restTemplate.postForObject(
+                    "https://api.github.com//user/repos",
+                    entity,
+                    String::class.java
+            )
+            System.err.println(rsp)
+        }
+    }
+
+    private fun isExistRepository(): Boolean {
         val developer = developerService.searchMaster()
-        val repository = Repository("articles")
-        val entity = HttpEntity<Repository>(repository, getGithubHeaders(developer.token!!))
-        val rsp = restTemplate.postForObject(
-                "https://api.github.com//user/repos",
+        val entity = HttpEntity("", getGithubHeaders(developer.token!!))
+        val repositories = restTemplate.exchange(
+                "https://api.github.com/user/repos",
+                HttpMethod.GET,
                 entity,
-                String::class.java
+                Array<RepositoryResponse>::class.java
         )
-        System.err.println(rsp)
+        return if (repositories.body!!.isEmpty()) false else repositories.body!!.any { it.name == REPOSITORY_NAME }
     }
 
 }

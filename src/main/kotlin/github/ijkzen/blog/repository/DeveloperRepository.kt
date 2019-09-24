@@ -1,6 +1,6 @@
 package github.ijkzen.blog.repository
 
-import github.ijkzen.blog.bean.github.Developer
+import github.ijkzen.blog.bean.github.response.Developer
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 

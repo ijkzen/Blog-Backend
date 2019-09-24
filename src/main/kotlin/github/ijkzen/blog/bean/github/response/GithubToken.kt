@@ -1,4 +1,4 @@
-package github.ijkzen.blog.bean.github
+package github.ijkzen.blog.bean.github.response
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
