@@ -5,6 +5,8 @@ import github.ijkzen.blog.bean.github.GithubEmail
 import github.ijkzen.blog.bean.github.GithubToken
 import github.ijkzen.blog.bean.github.Repository
 import github.ijkzen.blog.service.DeveloperService
+import github.ijkzen.blog.utils.CLIENT_ID
+import github.ijkzen.blog.utils.CLIENT_SECRET
 import github.ijkzen.blog.utils.MASTER_ID
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
@@ -18,8 +20,6 @@ import org.springframework.web.client.RestTemplate
 import java.io.File
 import java.util.*
 
-const val CLIENT_ID = "280efb2391f54e4992d7"
-const val CLIENT_SECRET = "f7692a0d1bc128d27203feacc26d5143199a19b5"
 val restTemplate = RestTemplate()
 
 @RestController
