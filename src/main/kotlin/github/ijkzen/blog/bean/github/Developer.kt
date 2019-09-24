@@ -46,7 +46,7 @@ data class Developer(
 
         @Id
         @JsonProperty("id")
-        var developerId: Long,
+        var developerId: Long?,
 
         @Column
         @JsonProperty("node_id")
@@ -82,7 +82,7 @@ data class Developer(
 
         @Column
         @JsonProperty("starred_url")
-        var starredUrl:String?,
+        var starredUrl: String?,
 
         @Column
         @JsonProperty("subscriptions_url")
@@ -110,7 +110,7 @@ data class Developer(
 
         @Column
         @JsonProperty("site_admin")
-        var siteAdmin: Boolean,
+        var siteAdmin: Boolean?,
 
         @Column
         @JsonProperty("name")
@@ -142,15 +142,15 @@ data class Developer(
 
         @Column
         @JsonProperty("public_repos")
-        var publicRepos: Int,
+        var publicRepos: Int?,
 
         @Column
         @JsonProperty("public_gists")
-        var publicGists: Int,
+        var publicGists: Int?,
 
         @Column
         @JsonProperty("followers")
-        var followers: Int,
+        var followers: Int?,
 
         @Column
         @JsonIgnore
@@ -159,4 +159,39 @@ data class Developer(
         @Column
         @JsonIgnore
         var token: String?
-)
+) {
+    constructor() :
+            this(
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null) {
+
+    }
+}

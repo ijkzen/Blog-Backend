@@ -3,6 +3,8 @@ package github.ijkzen.blog.controller
 import github.ijkzen.blog.bean.github.Developer
 import github.ijkzen.blog.bean.github.GithubEmail
 import github.ijkzen.blog.bean.github.GithubToken
+import github.ijkzen.blog.service.DeveloperService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -19,6 +21,8 @@ val restTemplate = RestTemplate()
 
 @RestController
 class OAuthController {
+    @Autowired
+    private lateinit var developerService: DeveloperService
 
     @GetMapping(value = ["/oauth/github"])
     fun getToken(@RequestParam("code") code: String) {
@@ -51,6 +55,7 @@ class OAuthController {
         if (developer.email.isNullOrEmpty()) {
             getDeveloperEmail(developer)
         } else {
+            developerService.save(developer)
             System.err.println(developer)
         }
     }
@@ -68,7 +73,7 @@ class OAuthController {
         )
 
         developer.email = email.body!!.find { it.primary }!!.email
-
+        developerService.save(developer)
         System.err.println(developer)
     }
 
