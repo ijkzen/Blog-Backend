@@ -1,7 +1,6 @@
-package github.ijkzen.blog.bean
+package github.ijkzen.blog.bean.github
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.io.Serializable
 
 data class GithubToken(
         @JsonProperty("access_token")
@@ -13,4 +12,4 @@ data class GithubToken(
         @JsonProperty("scope")
         val scope: String
 
-): Serializable
+)

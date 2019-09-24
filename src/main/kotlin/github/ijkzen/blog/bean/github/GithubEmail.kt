@@ -1,4 +1,4 @@
-package github.ijkzen.blog.bean
+package github.ijkzen.blog.bean.github
 
 data class GithubEmail(
         val email: String?,

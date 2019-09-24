@@ -1,8 +1,8 @@
 package github.ijkzen.blog.controller
 
-import github.ijkzen.blog.bean.Developer
-import github.ijkzen.blog.bean.GithubEmail
-import github.ijkzen.blog.bean.GithubToken
+import github.ijkzen.blog.bean.github.Developer
+import github.ijkzen.blog.bean.github.GithubEmail
+import github.ijkzen.blog.bean.github.GithubToken
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
