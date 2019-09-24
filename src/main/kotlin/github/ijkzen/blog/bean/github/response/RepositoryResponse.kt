@@ -2,7 +2,7 @@ package github.ijkzen.blog.bean.github.response
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class RepositoryRequest(
+data class RepositoryResponse(
         @JsonProperty("id")
         var id: Long?,
 

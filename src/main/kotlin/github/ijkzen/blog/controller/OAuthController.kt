@@ -1,9 +1,10 @@
 package github.ijkzen.blog.controller
 
-import github.ijkzen.blog.bean.github.request.RepositoryResponse
+import github.ijkzen.blog.bean.github.request.RepositoryRequest
 import github.ijkzen.blog.bean.github.response.Developer
 import github.ijkzen.blog.bean.github.response.GithubEmail
 import github.ijkzen.blog.bean.github.response.GithubToken
+import github.ijkzen.blog.bean.github.response.RepositoryResponse
 import github.ijkzen.blog.service.DeveloperService
 import github.ijkzen.blog.utils.CLIENT_ID
 import github.ijkzen.blog.utils.CLIENT_SECRET
@@ -90,7 +91,7 @@ class OAuthController {
             System.err.println("articles repository exist")
         } else {
             val developer = developerService.searchMaster()
-            val repository = RepositoryResponse(REPOSITORY_NAME)
+            val repository = RepositoryRequest(REPOSITORY_NAME)
             val entity = HttpEntity(repository, getGithubHeaders(developer.token!!))
             val rsp = restTemplate.postForObject(
                     "https://api.github.com//user/repos",
