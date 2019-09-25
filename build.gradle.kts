@@ -24,6 +24,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.alibaba:druid-spring-boot-starter:1.1.20")
     implementation("mysql:mysql-connector-java")
+    implementation("org.eclipse.jgit:org.eclipse.jgit:5.5.0.201909110433-r")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
