@@ -5,6 +5,19 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
 
+// RepositoryBean(
+// id=174083187,
+// nodeId=MDEwOlJlcG9zaXRvcnkxNzQwODMxODc=,
+// name=myEncryption, fullName=DQSU/myEncryption,
+// htmlUrl=https://github.com/DQSU/myEncryption,
+// language=Java,
+// watchersCount=0,
+// size=53970,
+// defaultBranch=master,
+// createdTime=2019-03-06T06:12:09Z,
+// updatedTime=2019-04-25T05:55:07Z
+// )
+
 @Entity(name = "Repository")
 data class RepositoryBean(
         @Id

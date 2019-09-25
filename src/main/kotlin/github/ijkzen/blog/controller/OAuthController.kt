@@ -42,7 +42,6 @@ class OAuthController {
                         "&code=$code",
                 GithubTokenBean::class.java
         )
-
         getDeveloperInfo(token!!.accessToken)
     }
 
@@ -76,7 +75,6 @@ class OAuthController {
                 entity,
                 Array<GithubEmailBean>::class.java
         )
-
         developerBean.email = email.body!!.find { it.primary }!!.email
         developerService.save(developerBean)
         createBlogRepository()
