@@ -9,11 +9,11 @@ import javax.persistence.*
  */
 @Entity
 data class Article(
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Column
         var fileName: String?,
 
-        @Column(unique = true)
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Long?,
 
         @Column
