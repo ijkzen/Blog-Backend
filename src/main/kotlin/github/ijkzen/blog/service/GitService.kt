@@ -2,17 +2,17 @@ package github.ijkzen.blog.service
 
 import com.jcraft.jsch.JSch
 import com.jcraft.jsch.Session
-import github.ijkzen.blog.utils.ASSETS_DIR
-import github.ijkzen.blog.utils.IMAGES_DIR
-import github.ijkzen.blog.utils.POST_DIR
-import github.ijkzen.blog.utils.REPOSITORY_NAME
+import github.ijkzen.blog.utils.*
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.transport.JschConfigSessionFactory
 import org.eclipse.jgit.transport.OpenSshConfig
 import org.eclipse.jgit.transport.SshTransport
 import org.eclipse.jgit.util.FS
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Service
+import org.springframework.web.client.RestTemplate
 import java.io.File
 
 /**
@@ -21,6 +21,8 @@ import java.io.File
  */
 @Service
 class GitService {
+
+    val restTemplate = RestTemplate()
 
     companion object {
         private var git: Git? = null
@@ -39,7 +41,7 @@ class GitService {
     private lateinit var developerService: DeveloperService
 
     fun cloneRepository() {
-        val fullName = repositoryService.findAllRepos()[0].fullName
+        val fullName = repositoryService.findArticleRepo().fullName
         Git.cloneRepository()
                 .setURI("git@github.com:${fullName}.git")
                 .setDirectory(File(REPOSITORY_NAME))
@@ -47,6 +49,19 @@ class GitService {
                     (it as SshTransport).sshSessionFactory = getSshSessionFactory()
                 }
                 .call()
+    }
+
+    fun deleteRemoteRepository(): Boolean {
+        val fullName = repositoryService.findArticleRepo().fullName
+        val token = developerService.searchMaster().token
+        val entity = HttpEntity("", getGithubHeaders(token!!))
+        val result = restTemplate.exchange(
+                "https://api.github.com/repos/$fullName",
+                HttpMethod.DELETE,
+                entity,
+                String::class.java
+        )
+        return 204 == result.statusCodeValue
     }
 
     fun addAll() {

@@ -32,3 +32,5 @@ out/
 .vscode/
 /MASTER_ID
 /articles/
+/IS_FIRST
+/REPOSITORY_ID

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
 import java.io.File
 
-val restTemplate = RestTemplate()
+private val restTemplate = RestTemplate()
 
 @RestController
 class OAuthController {
