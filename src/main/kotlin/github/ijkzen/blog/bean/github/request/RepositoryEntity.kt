@@ -2,7 +2,7 @@ package github.ijkzen.blog.bean.github.request
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class RepositoryRequest(
+data class RepositoryEntity(
         @JsonProperty("name")
         var name: String?,
 

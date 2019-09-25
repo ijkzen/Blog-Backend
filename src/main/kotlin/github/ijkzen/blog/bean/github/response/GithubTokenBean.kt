@@ -2,7 +2,7 @@ package github.ijkzen.blog.bean.github.response
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class GithubToken(
+data class GithubTokenBean(
         @JsonProperty("access_token")
         val accessToken: String,
 

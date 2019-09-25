@@ -38,8 +38,8 @@ import javax.persistence.Id
 // token=22bc5f7b03439b4dd3a9f29c9cf0ffce09b27b6f
 // )
 
-@Entity
-data class Developer(
+@Entity(name = "Developer")
+data class DeveloperBean(
         @Column
         @JsonProperty("login")
         var developerName: String?,
