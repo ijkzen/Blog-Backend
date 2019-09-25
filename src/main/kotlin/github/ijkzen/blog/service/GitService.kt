@@ -32,6 +32,21 @@ class GitService {
                 }
                 return field
             }
+
+        private fun getSshSessionFactory(): JschConfigSessionFactory {
+
+            return object : JschConfigSessionFactory() {
+
+                override fun configure(hc: OpenSshConfig.Host?, session: Session?) {
+                }
+
+                override fun createDefaultJSch(fs: FS?): JSch {
+                    val jsch = super.createDefaultJSch(fs)
+                    jsch.addIdentity(".ssh/id_rsa")
+                    return jsch
+                }
+            }
+        }
     }
 
     @Autowired
@@ -101,20 +116,5 @@ class GitService {
         git!!.pull().setTransportConfigCallback {
             (it as SshTransport).sshSessionFactory = getSshSessionFactory()
         }.call()
-    }
-
-    private fun getSshSessionFactory(): JschConfigSessionFactory {
-
-        return object : JschConfigSessionFactory() {
-
-            override fun configure(hc: OpenSshConfig.Host?, session: Session?) {
-            }
-
-            override fun createDefaultJSch(fs: FS?): JSch {
-                val jsch = super.createDefaultJSch(fs)
-                jsch.addIdentity(".ssh/id_rsa")
-                return jsch
-            }
-        }
     }
 }
