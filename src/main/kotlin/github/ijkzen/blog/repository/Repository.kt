@@ -9,4 +9,7 @@ interface Repository : JpaRepository<RepositoryBean, Long> {
 
     fun findByFullName(fullName: String): RepositoryBean?
 
+    fun existsByFullName(fullName: String): Boolean
+
+    fun deleteByFullName(fullName: String)
 }

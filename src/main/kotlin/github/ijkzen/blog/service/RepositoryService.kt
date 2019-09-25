@@ -5,7 +5,9 @@ import github.ijkzen.blog.repository.Repository
 import github.ijkzen.blog.utils.REPOSITORY_NAME
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import javax.transaction.Transactional
 
+@Transactional
 @Service
 class RepositoryService {
 
@@ -26,7 +28,10 @@ class RepositoryService {
     }
 
     fun updateArticleRepository(repositoryBean: RepositoryBean) {
-        
+        if (repository.existsByFullName(repositoryBean.fullName!!)) {
+            repository.deleteByFullName(repositoryBean.fullName!!)
+        }
+        save(repositoryBean)
     }
 
     fun findAllRepos(): Array<RepositoryBean> = repository.findAll().toTypedArray()
