@@ -24,4 +24,11 @@ class RepositoryService {
         val result = repository.findByFullName("$developerName/$REPOSITORY_NAME")
         return result?.htmlUrl ?: ""
     }
+
+    fun updateArticleRepository(repositoryBean: RepositoryBean) {
+        
+    }
+
+    fun findAllRepos(): Array<RepositoryBean> = repository.findAll().toTypedArray()
+
 }

@@ -91,7 +91,7 @@ class OAuthController {
     private fun createBlogRepository() {
         if (isExistRepository()) {
             val repos = getRepos()
-            repositoryService.save(repos.find { it.name == REPOSITORY_NAME }!!)
+            repositoryService.
         } else {
             val developer = developerService.searchMaster()
             val repository = RepositoryEntity(REPOSITORY_NAME)
