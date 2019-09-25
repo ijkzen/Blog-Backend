@@ -31,6 +31,24 @@ class OAuthController {
     @Autowired
     private lateinit var gitService: GitService
 
+    companion object {
+        var isFirst: Boolean? = null
+            get() {
+                if (field == null) {
+                    field = if (File(IS_FIRST).exists()) {
+                        File(IS_FIRST).readText().toBoolean()
+                    } else {
+                        true
+                    }
+                }
+                return field
+            }
+            set(value) {
+                field = value
+                File(IS_FIRST).writeText(value.toString())
+            }
+    }
+
     @GetMapping(value = ["/oauth/github"])
     fun getToken(@RequestParam("code") code: String) {
         val token = restTemplate.getForObject(
@@ -55,7 +73,9 @@ class OAuthController {
 
         val developer = result.body!!
         developer.token = token
-        File(MASTER_ID).writeText(developer.developerId.toString())
+        if (isFirst!!) {
+            File(MASTER_ID).writeText(developer.developerId.toString())
+        }
         if (developer.email.isNullOrEmpty()) {
             getDeveloperEmail(developer)
         } else {
@@ -92,7 +112,10 @@ class OAuthController {
                     RepositoryBean::class.java
             )
             repositoryService.updateArticleRepository(repositoryBean!!)
+            File(REPOSITORY_ID).writeText(repositoryBean.id!!.toString())
+            isFirst = false
         }
+
         if (File(REPOSITORY_NAME).exists()) {
             gitService.pullAll()
         } else {
