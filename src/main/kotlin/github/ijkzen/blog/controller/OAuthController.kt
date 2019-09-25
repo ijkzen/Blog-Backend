@@ -6,22 +6,17 @@ import github.ijkzen.blog.bean.github.response.GithubEmailBean
 import github.ijkzen.blog.bean.github.response.GithubTokenBean
 import github.ijkzen.blog.bean.github.response.RepositoryBean
 import github.ijkzen.blog.service.DeveloperService
+import github.ijkzen.blog.service.GitService
 import github.ijkzen.blog.service.RepositoryService
-import github.ijkzen.blog.utils.CLIENT_ID
-import github.ijkzen.blog.utils.CLIENT_SECRET
-import github.ijkzen.blog.utils.MASTER_ID
-import github.ijkzen.blog.utils.REPOSITORY_NAME
+import github.ijkzen.blog.utils.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
-import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
 import java.io.File
-import java.util.*
 
 val restTemplate = RestTemplate()
 
@@ -32,6 +27,9 @@ class OAuthController {
 
     @Autowired
     private lateinit var repositoryService: RepositoryService
+
+    @Autowired
+    private lateinit var gitService: GitService
 
     @GetMapping(value = ["/oauth/github"])
     fun getToken(@RequestParam("code") code: String) {
@@ -80,14 +78,6 @@ class OAuthController {
         createBlogRepository()
     }
 
-    private fun getGithubHeaders(token: String): HttpHeaders {
-        val headers = HttpHeaders()
-        return headers.apply {
-            accept = Collections.singletonList(MediaType.APPLICATION_JSON)
-            set("Authorization", "token $token")
-        }
-    }
-
     private fun createBlogRepository() {
         if (isExistRepository()) {
             val repos = getRepos()
@@ -102,6 +92,12 @@ class OAuthController {
                     RepositoryBean::class.java
             )
             repositoryService.updateArticleRepository(repositoryBean!!)
+        }
+        if (File(REPOSITORY_NAME).exists()) {
+            gitService.pullAll()
+        } else {
+            gitService.cloneRepository()
+            gitService.init()
         }
     }
 
@@ -120,5 +116,6 @@ class OAuthController {
                 Array<RepositoryBean>::class.java
         ).body!!
     }
+
 
 }

@@ -21,7 +21,7 @@ class RepositoryService {
         repository.save(repositoryBean)
     }
 
-    fun searchArticleRepository(): String {
+    fun getRepositoryUrl(): String {
         val developerName = developerService.searchMaster().developerName
         val result = repository.findByFullName("$developerName/$REPOSITORY_NAME")
         return result?.htmlUrl ?: ""
