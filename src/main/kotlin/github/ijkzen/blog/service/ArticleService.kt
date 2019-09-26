@@ -65,7 +65,7 @@ class ArticleService {
 
     fun getArticles(): List<Article> = articleRepository.findAll()
 
-    private fun getAuthor(markdown: String): String {
+    fun getAuthor(markdown: String): String {
         val meta = getMeta(markdown)
         return if (meta == null) {
             developerService.searchMaster().developerName!!
@@ -80,22 +80,22 @@ class ArticleService {
         }
     }
 
-    private fun getTitle(markdown: String, file: File): String {
+    fun getTitle(markdown: String, file: File): String {
         val meta = getMeta(markdown)
         return if (meta == null) {
-            file.name.substring(file.name.lastIndexOf("-") + 1)
+            file.name.substring(file.name.lastIndexOf("-") + 1).replace("\\.md", "")
         } else {
             val parts = meta.split("\n")
             var title: String?
             title = parts.find { it.contains("title") }?.replace("title:", "")?.trim()
             if (title == null) {
-                title = file.name.substring(file.name.lastIndexOf("-") + 1)
+                title = file.name.substring(file.name.lastIndexOf("-") + 1).replace("\\.md", "")
             }
             title
         }
     }
 
-    private fun getCategories(markdown: String): String {
+    fun getCategories(markdown: String): String {
         val meta = getMeta(markdown)
         return if (meta == null) {
             ""
