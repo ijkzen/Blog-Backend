@@ -25,6 +25,7 @@ dependencies {
     implementation("com.alibaba:druid-spring-boot-starter:1.1.20")
     implementation("mysql:mysql-connector-java")
     implementation("org.eclipse.jgit:org.eclipse.jgit:5.5.0.201909110433-r")
+    implementation("com.qiniu:qiniu-java-sdk:7.2.+")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

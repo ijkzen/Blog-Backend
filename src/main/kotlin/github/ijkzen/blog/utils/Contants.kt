@@ -11,3 +11,8 @@ const val REPOSITORY_NAME = "articles"
 const val POST_DIR = "$REPOSITORY_NAME/post"
 const val ASSETS_DIR = "$REPOSITORY_NAME/assets"
 const val IMAGES_DIR = "$ASSETS_DIR/images"
+
+const val BUCKET = "solo-static-resource"
+const val AK = "Jq2o09Qb3NtJxv_nzioY_buuIKLUERb-Rycu1f-k"
+const val SK = "NvUkpOTYV6rDTT510A0oo9t47Qq_r8q_1yCgH3WP"
+const val CDN_DOMAIN = "https://cdn.nextto.top/"
