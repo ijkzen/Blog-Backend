@@ -12,6 +12,12 @@ data class Article(
         @Column
         var fileName: String?,
 
+        @Column
+        var author: String?,
+
+        @Column
+        var isShow: Boolean?,
+
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Long?,
@@ -43,6 +49,8 @@ data class Article(
         var `abstract`: String?
 ) {
     constructor() : this(
+            null,
+            null,
             null,
             null,
             null,
