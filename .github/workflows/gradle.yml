@@ -16,7 +16,7 @@ jobs:
     - name: delete repository url
       run: sed -i '15d' build.gradle.kts
     - name: show build.gradle.kts file
-      run: echo build.gradle.kts
+      run: cat build.gradle.kts
     - name: update permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
