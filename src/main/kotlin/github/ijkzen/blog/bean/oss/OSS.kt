@@ -12,7 +12,7 @@ data class OSS(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Int,
 
-        @Column
+        @Column 
         var category: String?,
 
         @Column
