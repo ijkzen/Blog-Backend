@@ -131,8 +131,9 @@ class ArticleService {
         }
     }
 
-    private fun replaceUrl(markdown: String): String {
-        //todo
+    //    ![数组图解](/assets/images/2019/09/17/strassen_first.jpg)
+    fun replaceUrl(markdown: String): String {
+        val rule = "!\\[.*\\]\\(\\.\\./assets/images.*\\) "
         return ""
     }
 }

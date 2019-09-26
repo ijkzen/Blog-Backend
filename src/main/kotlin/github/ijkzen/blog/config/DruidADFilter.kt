@@ -20,6 +20,6 @@ class DruidADFilter : Filter {
         response!!.resetBuffer()
         var text = Utils.readFromResource(filePath)
         text = text.replace(ORIGIN_JS, NEW_JS)
-        response!!.writer.write(text)
+        response.writer.write(text)
     }
 }
