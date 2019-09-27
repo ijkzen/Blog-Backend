@@ -28,7 +28,7 @@ class OSSService {
     @Autowired
     private lateinit var ossRepository: OSSRepository
 
-    private val imageList = LinkedList<File>()
+    private var imageList = LinkedList<File>()
 
     companion object {
 
@@ -60,6 +60,7 @@ class OSSService {
             list.forEach {
                 uploadFile(it.absolutePath.substring(it.absolutePath.indexOf("images")))
             }
+            imageList = LinkedList()
         } else {
             System.err.println("images dir not exist")
         }
