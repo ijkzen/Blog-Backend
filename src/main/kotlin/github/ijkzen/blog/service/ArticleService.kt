@@ -51,17 +51,19 @@ class ArticleService {
         val content = replaceUrl(showdown)
         val dateFormat = SimpleDateFormat("yyyy-MM-dd")
 
-        var createdTime = dateFormat.parse(fileName.substring(0, 10))
+        val createdTime = dateFormat.parse(fileName.substring(0, 10))
         var updatedTime: Date? = Date()
         val `abstract` = showdown.substring(startIndex = 0, endIndex = showdown.length / 3)
         var isShow = true
         var id: Long? = null
+        var isDelete: Boolean? = null
         if (exist(fileName)) {
             val originArticle = articleRepository.findByFileName(fileName)
             visits = originArticle.visits ?: 0
             commentId = originArticle.commentId ?: 0
             isShow = originArticle.isShow ?: true
             id = originArticle.id ?: -1
+            isDelete = originArticle.isDelete ?: false
 
             if (content == originArticle.content) {
                 updatedTime = originArticle.updatedTime
@@ -69,10 +71,11 @@ class ArticleService {
         }
         articleRepository.save(
                 Article(
+                        id,
                         fileName,
                         author,
                         isShow,
-                        id,
+                        isDelete,
                         title,
                         category,
                         visits,

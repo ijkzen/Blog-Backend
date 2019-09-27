@@ -26,7 +26,8 @@ dependencies {
     implementation("mysql:mysql-connector-java")
     implementation("org.eclipse.jgit:org.eclipse.jgit:5.5.0.201909110433-r")
     implementation("com.qiniu:qiniu-java-sdk:7.2.+")
-
+    implementation("io.springfox:springfox-swagger2:2.9.2")
+    implementation("io.springfox:springfox-swagger-ui:2.9.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

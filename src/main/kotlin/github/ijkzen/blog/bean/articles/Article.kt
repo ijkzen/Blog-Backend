@@ -7,20 +7,25 @@ import javax.persistence.*
  * @Author ijkzen
  * @Date 2019/9/25
  */
+
 @Entity
 data class Article(
+
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        var id: Long?,
+
         @Column
         var fileName: String?,
 
         @Column
         var author: String?,
 
-        @Column
+        @Column(columnDefinition = "bit default 1")
         var isShow: Boolean?,
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long?,
+        @Column(columnDefinition = "bit default 0")
+        var isDelete: Boolean?,
 
         @Column
         var title: String?,
@@ -49,6 +54,7 @@ data class Article(
         var `abstract`: String?
 ) {
     constructor() : this(
+            null,
             null,
             null,
             null,

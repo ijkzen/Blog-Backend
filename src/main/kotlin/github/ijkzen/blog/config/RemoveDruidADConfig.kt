@@ -2,6 +2,7 @@ package github.ijkzen.blog.config
 
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
 import com.alibaba.druid.spring.boot.autoconfigure.properties.DruidStatProperties
+import github.ijkzen.blog.filter.DruidADFilter
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication

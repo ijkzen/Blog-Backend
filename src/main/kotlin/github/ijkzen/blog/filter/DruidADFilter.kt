@@ -1,4 +1,4 @@
-package github.ijkzen.blog.config
+package github.ijkzen.blog.filter
 
 import com.alibaba.druid.util.Utils
 import javax.servlet.*
