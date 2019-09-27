@@ -14,6 +14,8 @@ import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * @Author ijkzen
@@ -101,8 +103,10 @@ class GitService {
         File(ASSETS_DIR).mkdir()
         File(IMAGES_DIR).mkdir()
         val readme = "README.md"
-        File("$REPOSITORY_NAME/$readme").copyTo(File("$POST_DIR/$readme"))
-        File("$REPOSITORY_NAME/$readme").copyTo(File("$IMAGES_DIR/$readme"))
+        val format = SimpleDateFormat("yyyy-MM-dd")
+        val targetReadMe = "${format.format(Date())}-$readme"
+        File("$REPOSITORY_NAME/$readme").copyTo(File("$POST_DIR/$targetReadMe"))
+        File("$REPOSITORY_NAME/$readme").copyTo(File("$IMAGES_DIR/$targetReadMe"))
         completeAll("init repo")
     }
 

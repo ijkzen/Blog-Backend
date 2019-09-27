@@ -5,6 +5,7 @@ import github.ijkzen.blog.bean.github.response.DeveloperBean
 import github.ijkzen.blog.bean.github.response.GithubEmailBean
 import github.ijkzen.blog.bean.github.response.GithubTokenBean
 import github.ijkzen.blog.bean.github.response.RepositoryBean
+import github.ijkzen.blog.service.ArticleService
 import github.ijkzen.blog.service.DeveloperService
 import github.ijkzen.blog.service.GitService
 import github.ijkzen.blog.service.RepositoryService
@@ -30,6 +31,9 @@ class OAuthController {
 
     @Autowired
     private lateinit var gitService: GitService
+
+    @Autowired
+    private lateinit var articleService: ArticleService
 
     companion object {
         var isFirst: Boolean? = null
@@ -101,7 +105,9 @@ class OAuthController {
     private fun createBlogRepository() {
         if (isExistRepository()) {
             val repos = getRepos()
-            repositoryService.updateArticleRepository(repos.find { it.name == REPOSITORY_NAME }!!)
+            val repo = repos.find { it.name == REPOSITORY_NAME }!!
+            File(REPOSITORY_ID).writeText(repo.id!!.toString())
+            repositoryService.updateArticleRepository(repo)
         } else {
             val developer = developerService.searchMaster()
             val repository = RepositoryEntity(REPOSITORY_NAME)
@@ -122,6 +128,8 @@ class OAuthController {
             gitService.cloneRepository()
             gitService.init()
         }
+
+        articleService.completeAll()
     }
 
     private fun isExistRepository(): Boolean {

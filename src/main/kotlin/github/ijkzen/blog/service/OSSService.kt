@@ -7,10 +7,13 @@ import com.qiniu.storage.Region
 import com.qiniu.storage.UploadManager
 import com.qiniu.storage.model.DefaultPutRet
 import com.qiniu.util.Auth
+import github.ijkzen.blog.bean.oss.OSS
+import github.ijkzen.blog.repository.OSSRepository
 import github.ijkzen.blog.utils.AK
 import github.ijkzen.blog.utils.ASSETS_DIR
 import github.ijkzen.blog.utils.BUCKET
 import github.ijkzen.blog.utils.SK
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.io.File
 import java.util.*
@@ -22,10 +25,14 @@ import java.util.*
 @Service
 class OSSService {
 
+    @Autowired
+    private lateinit var ossRepository: OSSRepository
+
     private val imageList = LinkedList<File>()
 
     companion object {
 
+        //todo get ak and sk from db
         fun getUploadToken(key: String): String = Auth.create(AK, SK).uploadToken(BUCKET, key)
 
         var uploadManager: UploadManager? = null
@@ -68,5 +75,14 @@ class OSSService {
             }
         }
         return imageList
+    }
+
+    fun getOssInUse(): OSS? {
+        val list = ossRepository.findByInUseIsTrue()
+        return if (list == null || list.isEmpty()) {
+            null
+        } else {
+            list[0]
+        }
     }
 }

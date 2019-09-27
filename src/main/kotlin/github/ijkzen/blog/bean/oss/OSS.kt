@@ -10,7 +10,7 @@ import javax.persistence.*
 data class OSS(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Int,
+        var id: Int?,
 
         @Column 
         var category: String?,
@@ -29,4 +29,13 @@ data class OSS(
 
         @Column(columnDefinition = "boolean default 0")
         var inUse: Boolean = false
-)
+) {
+    constructor() : this(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+    )
+}

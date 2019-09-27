@@ -2,9 +2,12 @@ package github.ijkzen.blog.service
 
 import github.ijkzen.blog.bean.articles.Article
 import github.ijkzen.blog.repository.ArticleRepository
+import github.ijkzen.blog.utils.CDN_DOMAIN
+import github.ijkzen.blog.utils.POST_DIR
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.io.File
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 import kotlin.collections.ArrayList
@@ -22,6 +25,20 @@ class ArticleService {
     @Autowired
     private lateinit var articleRepository: ArticleRepository
 
+    @Autowired
+    private lateinit var ossService: OSSService
+
+    fun completeAll() {
+        ossService.uploadAllImages()
+        storeArticles()
+    }
+
+    private fun storeArticles() {
+        File(POST_DIR).listFiles()?.forEach {
+            parseMd2Object(it)
+        }
+    }
+
 
     private fun parseMd2Object(markdown: File) {
         val showdown = markdown.readText()
@@ -32,18 +49,23 @@ class ArticleService {
         var visits: Long = 0
         var commentId: Long = 0
         val content = replaceUrl(showdown)
-        var createdTime = Date()
-        val updatedTime = Date()
-        val `abstract` = showdown.substring(startIndex = 0, endIndex = 150)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+
+        var createdTime = dateFormat.parse(fileName.substring(0, 10))
+        var updatedTime: Date? = Date()
+        val `abstract` = showdown.substring(startIndex = 0, endIndex = showdown.length / 3)
         var isShow = true
         var id: Long? = null
         if (exist(fileName)) {
             val originArticle = articleRepository.findByFileName(fileName)
             visits = originArticle.visits ?: 0
             commentId = originArticle.commentId ?: 0
-            createdTime = originArticle.createdTime ?: Date()
             isShow = originArticle.isShow ?: true
-            id = originArticle.id ?: 0
+            id = originArticle.id ?: -1
+
+            if (content == originArticle.content) {
+                updatedTime = originArticle.updatedTime
+            }
         }
         articleRepository.save(
                 Article(
@@ -133,7 +155,21 @@ class ArticleService {
 
     //    ![数组图解](/assets/images/2019/09/17/strassen_first.jpg)
     fun replaceUrl(markdown: String): String {
-        val rule = "!\\[.*\\]\\(\\.\\./assets/images.*\\) "
-        return ""
+        var tmp = markdown
+        val regex = "!\\[.*?]\\(\\.\\./assets/images.*?\\)"
+        val pattern = Pattern.compile(regex)
+        val matcher = pattern.matcher(markdown)
+        val cdn = if (ossService.getOssInUse() == null) CDN_DOMAIN else ossService.getOssInUse()!!.cdnDomain
+        while (matcher.find()) {
+            val result = matcher.group(0)
+            val description = result.substring(result.indexOf("["), result.indexOf("]"))
+                    .replace("[", "")
+                    .replace("]", "")
+                    .trim()
+
+            val url = cdn + result.substring(result.indexOf("/images"), result.length - 1)
+            tmp = tmp.replace(result, "![$description]($url)")
+        }
+        return tmp
     }
 }

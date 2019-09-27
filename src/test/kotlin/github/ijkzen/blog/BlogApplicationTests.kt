@@ -39,8 +39,8 @@ class BlogApplicationTests {
 
         System.err.println(articleService.getTitle(markdown, File("D:\\Projects\\books\\ijkzen.github.io\\_posts\\2019-09-04-算法导论4_1.md")))
         System.err.println(articleService.getCategories(markdown))
-        System.err.println(articleService.getAuthor(markdown))
-
+        //System.err.println(articleService.getAuthor(markdown))
+        System.err.println(articleService.replaceUrl(markdown))
     }
 
 
