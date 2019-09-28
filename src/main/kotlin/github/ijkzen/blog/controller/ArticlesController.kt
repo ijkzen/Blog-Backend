@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.*
 
 @RequestMapping("/articles")
 @RestController
@@ -22,7 +23,7 @@ class ArticlesController {
     @GetMapping(value = ["/{id}"])
     fun getArticle(@PathVariable("id") id: String): ArticleBean {
         val result = ArticleBean(null)
-        val optionArticle = articleService.getArticle(id.toLong())
+        val optionArticle: Optional<Article> = articleService.getArticle(id.toLong())
         if (optionArticle.isEmpty) {
             result.errCode = "404"
             result.errMessage = "have no article for this id"
