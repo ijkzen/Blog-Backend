@@ -14,7 +14,7 @@ jobs:
       with:
         java-version: 1.8
     - name: Delete repository url
-      run: sed -i '15d' build.gradle.kts
+      run: sed -i '19d' build.gradle.kts
     - name: Show build.gradle.kts file
       run: cat build.gradle.kts
     - name: Update permission for gradlew
