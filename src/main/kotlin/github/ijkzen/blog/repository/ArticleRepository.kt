@@ -11,4 +11,11 @@ interface ArticleRepository : JpaRepository<Article, Long> {
 
     fun findByFileName(fileName: String): Article
 
+    fun findArticlesByCategoryContaining(category: String): List<Article>
+
+    fun findByIsShowTrueAndIsDeleteFalseOrderByCreatedTimeDesc(): List<Article>
+
+    fun findByIsShowTrueAndIsDeleteFalseOrderByCreatedTimeAsc(): List<Article>
+
+    fun findByTitleContainingAndContentContaining(keywords: String, contents: String): List<Article>
 }

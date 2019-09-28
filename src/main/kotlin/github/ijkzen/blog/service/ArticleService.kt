@@ -39,6 +39,25 @@ class ArticleService {
         }
     }
 
+    fun getArticle(id: Long): Optional<Article> {
+        return articleRepository.findById(id)
+    }
+
+    fun getCategoryArticles(category: String): List<Article> {
+        return articleRepository.findArticlesByCategoryContaining(category)
+    }
+
+    fun getArticlesDesc(): List<Article> {
+        return articleRepository.findByIsShowTrueAndIsDeleteFalseOrderByCreatedTimeDesc()
+    }
+
+    fun getArticlesAsc(): List<Article> {
+        return articleRepository.findByIsShowTrueAndIsDeleteFalseOrderByCreatedTimeAsc()
+    }
+
+    fun getArticlesByKeywords(keywords: String): List<Article> {
+        return articleRepository.findByTitleContainingAndContentContaining(keywords, keywords)
+    }
 
     private fun parseMd2Object(markdown: File) {
         val showdown = markdown.readText()
@@ -56,7 +75,7 @@ class ArticleService {
         val `abstract` = showdown.substring(startIndex = 0, endIndex = showdown.length / 3)
         var isShow = true
         var id: Long? = null
-        var isDelete: Boolean? = null
+        var isDelete: Boolean? = false
         if (exist(fileName)) {
             val originArticle = articleRepository.findByFileName(fileName)
             visits = originArticle.visits ?: 0
