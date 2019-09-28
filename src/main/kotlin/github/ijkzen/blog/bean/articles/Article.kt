@@ -52,20 +52,4 @@ data class Article(
 
         @Column(columnDefinition = "text not null")
         var `abstract`: String?
-) {
-    constructor() : this(
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null
-    )
-}
+)

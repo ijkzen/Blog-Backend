@@ -1,8 +1,6 @@
 package github.ijkzen.blog
 
 import github.ijkzen.blog.service.ArticleService
-import github.ijkzen.blog.service.GitService
-import github.ijkzen.blog.service.OSSService
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,12 +11,6 @@ import java.io.File
 @RunWith(SpringRunner::class)
 @SpringBootTest
 class BlogApplicationTests {
-
-    @Autowired
-    private lateinit var gitService: GitService
-
-    @Autowired
-    private lateinit var oSSService: OSSService
 
     @Autowired
     private lateinit var articleService: ArticleService

@@ -60,7 +60,7 @@ class GitService {
     fun cloneRepository() {
         val fullName = repositoryService.findArticleRepo().fullName
         Git.cloneRepository()
-                .setURI("git@github.com:${fullName}.git")
+                .setURI("git@github.com:$fullName.git")
                 .setDirectory(File(REPOSITORY_NAME))
                 .setTransportConfigCallback {
                     (it as SshTransport).sshSessionFactory = getSshSessionFactory()

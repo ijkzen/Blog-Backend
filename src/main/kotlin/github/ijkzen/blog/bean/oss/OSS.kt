@@ -6,6 +6,7 @@ import javax.persistence.*
  * @Author ijkzen
  * @Date 2019/9/26
  */
+
 @Entity
 data class OSS(
         @Id
@@ -29,13 +30,4 @@ data class OSS(
 
         @Column(columnDefinition = "boolean default 0")
         var inUse: Boolean = false
-) {
-    constructor() : this(
-            null,
-            null,
-            null,
-            null,
-            null,
-            null
-    )
-}
+)

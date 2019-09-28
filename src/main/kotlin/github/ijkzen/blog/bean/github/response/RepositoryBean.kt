@@ -63,18 +63,4 @@ data class RepositoryBean(
         @Column
         @JsonProperty("updated_at")
         var updatedTime: String?
-) {
-    constructor() : this(
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null
-    )
-}
+)

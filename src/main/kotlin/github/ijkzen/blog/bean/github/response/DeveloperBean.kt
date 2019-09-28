@@ -159,39 +159,4 @@ data class DeveloperBean(
         @Column
         @JsonIgnore
         var token: String?
-) {
-    constructor() :
-            this(
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null) {
-
-    }
-}
+)
