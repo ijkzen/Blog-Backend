@@ -23,7 +23,7 @@ class ArticlesController {
     fun getArticle(@PathVariable("id") id: String): ArticleBean {
         val result = ArticleBean(null)
         val optionArticle = articleService.getArticle(id.toLong())
-        if (optionArticle.isEmpty()) {
+        if (!optionArticle.isPresent) {
             result.errCode = "404"
             result.errMessage = "have no article for this id"
         } else {
