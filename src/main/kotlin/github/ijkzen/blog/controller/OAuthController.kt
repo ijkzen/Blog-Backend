@@ -10,6 +10,9 @@ import github.ijkzen.blog.service.DeveloperService
 import github.ijkzen.blog.service.GitService
 import github.ijkzen.blog.service.RepositoryService
 import github.ijkzen.blog.utils.*
+import io.swagger.annotations.Api
+import io.swagger.annotations.ApiImplicitParam
+import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
 import java.io.File
 
+@Api(value = "授权接口", description = "OAuth Controller", tags = ["Github授权"])
 @RestController
 class OAuthController {
     @Autowired
@@ -53,6 +57,15 @@ class OAuthController {
             }
     }
 
+    @ApiOperation(
+            value = "Github授权回调URL",
+            notes =
+            """
+                授权成功后，Github会自动访问；
+                成功回调后，会获取开发者信息，并且创建仓库，初始化仓库，完成首次提交
+            """
+    )
+    @ApiImplicitParam(name = "code", value = "用来向GitHub申请令牌", required = true, dataType = "String")
     @GetMapping(value = ["/oauth/github"])
     fun getToken(@RequestParam("code") code: String) {
         val token = restTemplate.getForObject(
