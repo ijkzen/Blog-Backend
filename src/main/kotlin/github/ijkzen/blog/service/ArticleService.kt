@@ -194,4 +194,10 @@ class ArticleService {
         }
         return tmp
     }
+
+    fun save(article: Article) = articleRepository.save(article)
+
+    fun deleteArticle(id: Long) {
+        articleRepository.deleteArticle(id)
+    }
 }

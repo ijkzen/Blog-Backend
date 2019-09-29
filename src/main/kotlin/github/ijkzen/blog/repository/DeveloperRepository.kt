@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository
 
 
 @Repository
-interface DeveloperRepository : JpaRepository<DeveloperBean, Long>
+interface DeveloperRepository : JpaRepository<DeveloperBean, Long> {
+
+    fun findDeveloperBeanByNodeId(nodeId: String): DeveloperBean?
+}

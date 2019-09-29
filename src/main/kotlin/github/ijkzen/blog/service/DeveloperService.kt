@@ -20,4 +20,8 @@ class DeveloperService {
     fun searchMaster(): DeveloperBean {
         return repository.findById(File(MASTER_ID).readText().toLong()).get()
     }
+
+    fun searchDeveloperByNodeId(nodeId: String): DeveloperBean? {
+        return repository.findDeveloperBeanByNodeId(nodeId)
+    }
 }
