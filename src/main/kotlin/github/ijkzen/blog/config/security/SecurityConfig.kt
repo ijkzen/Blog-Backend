@@ -31,6 +31,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity?) {
         http!!.cors()
                 .and()
+                .csrf().disable()
                 .addFilterBefore(
                         ArticleFilter("/article/*", authenticationManager()),
                         UsernamePasswordAuthenticationFilter::class.java

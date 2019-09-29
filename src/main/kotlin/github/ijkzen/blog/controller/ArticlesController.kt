@@ -25,10 +25,10 @@ class ArticlesController {
     private lateinit var articleService: ArticleService
 
     @ApiOperation(
-            value = "根据文章ID获取文章",
+            value = "根据文章Id获取文章",
             notes =
             """
-            如果文章ID不存在会返回，
+            如果文章Id不存在会返回，
                 {
                 errCode: "404",
                 errMessage: "have no article for this id",
@@ -36,10 +36,16 @@ class ArticlesController {
                 }
             """
     )
+    @ApiImplicitParam(
+            name = "id",
+            value = "文章Id",
+            required = true,
+            dataTypeClass = Long::class
+    )
     @GetMapping(value = ["/{id}"])
-    fun getArticle(@PathVariable("id") id: String): ArticleBean {
+    fun getArticle(@PathVariable("id") id: Long): ArticleBean {
         val result = ArticleBean(null)
-        val optionArticle = articleService.getArticle(id.toLong())
+        val optionArticle = articleService.getArticle(id)
         if (!optionArticle.isPresent) {
             result.errCode = "404"
             result.errMessage = "have no article for this id"
@@ -56,6 +62,12 @@ class ArticlesController {
             """
                 如果该类型不存在，文章列表为空
             """
+    )
+    @ApiImplicitParam(
+            name = "category",
+            value = "文章分类",
+            required = true,
+            dataTypeClass = String::class
     )
     @GetMapping(value = ["/category/{category}"])
     fun getCategoryArticles(@PathVariable("category") category: String): ArticlesBean {
@@ -75,8 +87,8 @@ class ArticlesController {
             """
     )
     @ApiImplicitParams(
-            ApiImplicitParam(name = "order", value = "DESC|ASC, 标记升序降序", required = true, dataType = "String"),
-            ApiImplicitParam(name = "page", value = "页数", required = true, dataType = "Int")
+            ApiImplicitParam(name = "order", value = "DESC|ASC, 标记升序降序", required = true, dataTypeClass = String::class),
+            ApiImplicitParam(name = "page", value = "页数", required = true, dataTypeClass = Int::class)
     )
     @GetMapping(value = ["/list/{order}/{page}"])
     fun getArticles(@PathVariable("order") order: String, @PathVariable page: Int): ArticlesBean {
@@ -115,6 +127,12 @@ class ArticlesController {
             """
                 关键词会在文章标题和文章内容同时搜索    
             """
+    )
+    @ApiImplicitParam(
+            name = "keywords",
+            value = "关键词",
+            required = true,
+            dataTypeClass = String::class
     )
     @GetMapping(value = ["/search/{keywords}"])
     fun getArticlesByKeywords(@PathVariable("keywords") keywords: String): ArticlesBean {

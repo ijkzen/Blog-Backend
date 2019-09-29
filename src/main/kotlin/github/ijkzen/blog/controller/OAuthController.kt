@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
 import java.io.File
 
-@Api(value = "授权接口", description = "", tags = ["Github授权"])
+@Api(value = "授权接口", description = "授权接口", tags = ["Github授权"])
 @RestController
 class OAuthController {
     @Autowired

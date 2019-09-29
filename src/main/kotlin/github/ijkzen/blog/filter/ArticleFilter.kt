@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -24,6 +25,7 @@ class ArticleFilter(url: String, authenticationManager: AuthenticationManager) :
     }
 
     override fun attemptAuthentication(request: HttpServletRequest?, response: HttpServletResponse?): Authentication {
+        setContinueChainBeforeSuccessfulAuthentication(true)
         val authentication = getAuthentication(request!!)
         return if (authentication == null) {
             throw UsernameNotFoundException("认证失败")
@@ -32,12 +34,19 @@ class ArticleFilter(url: String, authenticationManager: AuthenticationManager) :
         }
     }
 
+    override fun successfulAuthentication(request: HttpServletRequest?, response: HttpServletResponse?, chain: FilterChain?, authResult: Authentication?) {
+        super.successfulAuthentication(request, response, chain, authResult)
+        System.err.println("认证成功")
+        /// chain!!.doFilter(request, response)
+    }
+
     override fun unsuccessfulAuthentication(request: HttpServletRequest?, response: HttpServletResponse?, failed: AuthenticationException?) {
         System.err.println("认证失败")
         SecurityContextHolder.clearContext();
-        response!!.contentType = "application/json"
+        response!!.contentType = "application/json;charset=UTF-8"
         response.status = HttpServletResponse.SC_UNAUTHORIZED
-        val result = BaseBean("403", "认证失败")
-        response.outputStream.println(ObjectMapper().writeValueAsString(result))
+        response.characterEncoding = "UTF-8"
+        val result = BaseBean("401", "认证失败")
+        response.writer.println(ObjectMapper().writeValueAsString(result))
     }
 }

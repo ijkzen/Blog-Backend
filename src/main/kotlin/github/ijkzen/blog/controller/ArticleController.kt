@@ -33,6 +33,7 @@ class ArticleController {
     @Autowired
     private lateinit var newArticleService: NewArticleService
 
+    //todo test
     @ApiOperation(
             value = "访客添加文章",
             notes =
@@ -46,7 +47,9 @@ class ArticleController {
                     name = "article",
                     value = "文章主体",
                     required = true,
-                    dataTypeClass = Article::class
+                    dataType = "Article",
+                    dataTypeClass = Article::class,
+                    paramType = "body"
             ),
             ApiImplicitParam(
                     name = AUTHORIZATION,
@@ -59,26 +62,38 @@ class ArticleController {
     @PostMapping(value = ["/new"])
     fun addGuestArticle(@RequestBody article: Article): BaseBean {
         val result = BaseBean()
-        article.isDelete = false
-        article.isShow = false
+        article.let {
+            it.isDelete = false
+            it.isShow = false
+            it.id = null
+        }
         val articleId = articleService.save(article)
         result.errMessage = articleId.id.toString()
         return result
     }
 
-    @ApiImplicitParam(
-            name = AUTHORIZATION,
-            value = "验证身份",
-            required = true,
-            dataTypeClass = String::class,
-            paramType = "header"
-    )
+
     @ApiOperation(
             value = "删除文章",
             notes =
             """
                 根据Id删除文章
             """
+    )
+    @ApiImplicitParams(
+            ApiImplicitParam(
+                    name = AUTHORIZATION,
+                    value = "验证身份",
+                    required = true,
+                    dataTypeClass = String::class,
+                    paramType = "header"
+            ),
+            ApiImplicitParam(
+                    name = "id",
+                    value = "将要被删除的文章Id",
+                    required = true,
+                    dataTypeClass = Long::class
+            )
     )
     @DeleteMapping(value = ["/{id}"])
     fun deleteArticle(@PathVariable("id") id: Long): BaseBean {
@@ -88,17 +103,39 @@ class ArticleController {
         return result
     }
 
-    @ApiImplicitParam(
-            name = AUTHORIZATION,
-            value = "验证身份",
-            required = true,
-            dataTypeClass = String::class,
-            paramType = "header"
+    //todo test
+    @ApiOperation(
+            value = "修改文章记录",
+            notes =
+            """
+                添加文章修改记录，等待站长确认            
+            """
+    )
+    @ApiImplicitParams(
+            ApiImplicitParam(
+                    name = AUTHORIZATION,
+                    value = "验证身份",
+                    required = true,
+                    dataTypeClass = String::class,
+                    paramType = "header"
+            ),
+            ApiImplicitParam(
+                    name = "newArticle",
+                    value = "修改记录",
+                    required = true,
+                    dataType = "NewArticle",
+                    dataTypeClass = NewArticle::class,
+                    paramType = "body"
+            )
     )
     @PostMapping(value = ["/edit"])
     fun editArticle(@RequestBody newArticle: NewArticle): BaseBean {
         val result = BaseBean()
-        newArticleService.save(newArticle)
+        newArticleService.save(
+                newArticle.apply {
+                    id = null
+                }
+        )
         return result
     }
 }
