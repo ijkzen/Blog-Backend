@@ -19,9 +19,9 @@ interface ArticleRepository : JpaRepository<Article, Long> {
 
     fun findArticlesByCategoryContaining(category: String): List<Article>
 
-    fun findByIsShowTrueAndIsDeleteFalseOrderByCreatedTimeDesc(): List<Article>
+    fun findByShownTrueAndDeletedFalseOrderByCreatedTimeDesc(): List<Article>
 
-    fun findByIsShowTrueAndIsDeleteFalseOrderByCreatedTimeAsc(): List<Article>
+    fun findByShownTrueAndDeletedFalseOrderByCreatedTimeAsc(): List<Article>
 
     fun findByTitleContainingAndContentContaining(keywords: String, contents: String): List<Article>
 

@@ -2,7 +2,6 @@ package github.ijkzen.blog.filter
 
 import github.ijkzen.blog.bean.BaseBean
 import github.ijkzen.blog.utils.getAuthorization
-import github.ijkzen.blog.utils.setAuthentication
 import org.codehaus.jackson.map.ObjectMapper
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.core.Authentication
@@ -19,7 +18,7 @@ import javax.servlet.http.HttpServletResponse
  * @Author ijkzen
  * @Date 2019/9/29
  */
-class ArticleFilter(url: String, authenticationManager: AuthenticationManager) : AbstractAuthenticationProcessingFilter(AntPathRequestMatcher(url)) {
+class CommonFilter(url: String, authenticationManager: AuthenticationManager, httpMethod: String? = null) : AbstractAuthenticationProcessingFilter(AntPathRequestMatcher(url, httpMethod)) {
 
     init {
         setAuthenticationManager(authenticationManager)
@@ -32,7 +31,6 @@ class ArticleFilter(url: String, authenticationManager: AuthenticationManager) :
             throw UsernameNotFoundException("认证失败")
         } else {
             val result = authenticationManager.authenticate(authentication)
-            setAuthentication(result)
             result
         }
     }

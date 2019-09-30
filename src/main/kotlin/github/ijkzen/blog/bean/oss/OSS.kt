@@ -28,6 +28,6 @@ data class OSS(
         @Column
         var cdnDomain: String?,
 
-        @Column(columnDefinition = "boolean default 0")
+        @Column(columnDefinition = "bit default 0")
         var inUse: Boolean = false
 )

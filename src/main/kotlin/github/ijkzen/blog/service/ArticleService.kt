@@ -48,11 +48,11 @@ class ArticleService {
     }
 
     fun getArticlesDesc(): List<Article> {
-        return articleRepository.findByIsShowTrueAndIsDeleteFalseOrderByCreatedTimeDesc()
+        return articleRepository.findByShownTrueAndDeletedFalseOrderByCreatedTimeDesc()
     }
 
     fun getArticlesAsc(): List<Article> {
-        return articleRepository.findByIsShowTrueAndIsDeleteFalseOrderByCreatedTimeAsc()
+        return articleRepository.findByShownTrueAndDeletedFalseOrderByCreatedTimeAsc()
     }
 
     fun getArticlesByKeywords(keywords: String): List<Article> {
@@ -80,9 +80,9 @@ class ArticleService {
             val originArticle = articleRepository.findByFileName(fileName)
             visits = originArticle.visits ?: 0
             commentId = originArticle.commentId ?: 0
-            isShow = originArticle.isShow ?: true
+            isShow = originArticle.shown ?: true
             id = originArticle.id ?: -1
-            isDelete = originArticle.isDelete ?: false
+            isDelete = originArticle.deleted ?: false
 
             if (content == originArticle.content) {
                 updatedTime = originArticle.updatedTime

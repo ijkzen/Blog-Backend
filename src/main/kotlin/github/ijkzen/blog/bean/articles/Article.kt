@@ -22,10 +22,10 @@ data class Article(
         var author: String?,
 
         @Column(columnDefinition = "bit default 1")
-        var isShow: Boolean?,
+        var shown: Boolean?,
 
         @Column(columnDefinition = "bit default 0")
-        var isDelete: Boolean?,
+        var deleted: Boolean?,
 
         @Column
         var title: String?,

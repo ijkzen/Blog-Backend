@@ -68,8 +68,8 @@ class ArticleController {
     fun addGuestArticle(@RequestBody article: Article): BaseBean {
         val result = BaseBean()
         article.let {
-            it.isDelete = false
-            it.isShow = false
+            it.deleted = false
+            it.shown = false
             it.id = null
         }
         val articleId = articleService.save(article)

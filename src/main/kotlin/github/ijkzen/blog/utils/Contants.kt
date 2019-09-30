@@ -19,3 +19,7 @@ const val CDN_DOMAIN = "https://cdn.nextto.top"
 
 const val DESC = "DESC"
 const val ASC = "ASC"
+
+const val HTTP_GET = "GET"
+const val HTTP_POST = "POST"
+const val HTTP_DELETE = "DELETE"

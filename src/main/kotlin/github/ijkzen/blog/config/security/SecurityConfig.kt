@@ -1,6 +1,6 @@
 package github.ijkzen.blog.config.security
 
-import github.ijkzen.blog.filter.ArticleFilter
+import github.ijkzen.blog.filter.CommonFilter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -33,9 +33,17 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 .and()
                 .csrf().disable()
                 .addFilterBefore(
-                        ArticleFilter("/article/*", authenticationManager()),
+                        CommonFilter("/article/*", authenticationManager()),
                         UsernamePasswordAuthenticationFilter::class.java
                 )
+//                .addFilterBefore(
+//                        CommonFilter("/comment/*", authenticationManager(), HTTP_DELETE),
+//                        UsernamePasswordAuthenticationFilter::class.java
+//                )
+//                .addFilterBefore(
+//                        CommonFilter("/comment/report/list", authenticationManager()),
+//                        UsernamePasswordAuthenticationFilter::class.java
+//                )
     }
 
     @Bean
