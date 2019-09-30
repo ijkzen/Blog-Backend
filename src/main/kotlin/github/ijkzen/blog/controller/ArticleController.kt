@@ -107,31 +107,23 @@ class ArticleController {
         val master = developerService.searchMaster()
         val result = BaseBean()
 
-        return if (authentication == null) {
+        return if (authentication.principal == master.nodeId) {
+            articleService.deleteArticle(id)
             result.apply {
-                errCode = "401"
-                errMessage = "认证失败"
+                errMessage = "删除成功"
             }
         } else {
-
-            if (authentication.principal == master.nodeId) {
+            val developer = developerService.searchDeveloperByNodeId(authentication.principal as String)
+            val article = articleService.getArticle(id).get()
+            if (article.author == developer!!.developerName) {
                 articleService.deleteArticle(id)
                 result.apply {
                     errMessage = "删除成功"
                 }
             } else {
-                val developer = developerService.searchDeveloperByNodeId(authentication.principal as String)
-                val article = articleService.getArticle(id).get()
-                if (article.author == developer!!.developerName) {
-                    articleService.deleteArticle(id)
-                    result.apply {
-                        errMessage = "删除成功"
-                    }
-                } else {
-                    result.errCode = "403"
-                    result.apply {
-                        errMessage = "无操作权限"
-                    }
+                result.errCode = "403"
+                result.apply {
+                    errMessage = "无操作权限"
                 }
             }
         }
