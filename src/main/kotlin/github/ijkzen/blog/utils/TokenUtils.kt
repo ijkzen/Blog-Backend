@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest
 
 const val AUTHORIZATION = "Authorization"
 
-fun getAuthentication(request: HttpServletRequest): Authentication? {
+fun getAuthorization(request: HttpServletRequest): Authentication? {
     val token = request.getHeader(AUTHORIZATION)
     return if (token == null) {
         null

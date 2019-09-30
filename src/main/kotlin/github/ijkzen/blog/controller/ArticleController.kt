@@ -4,8 +4,10 @@ import github.ijkzen.blog.bean.BaseBean
 import github.ijkzen.blog.bean.articles.Article
 import github.ijkzen.blog.bean.articles.NewArticle
 import github.ijkzen.blog.service.ArticleService
+import github.ijkzen.blog.service.DeveloperService
 import github.ijkzen.blog.service.NewArticleService
 import github.ijkzen.blog.utils.AUTHORIZATION
+import github.ijkzen.blog.utils.getAuthentication
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
@@ -32,6 +34,9 @@ class ArticleController {
 
     @Autowired
     private lateinit var newArticleService: NewArticleService
+
+    @Autowired
+    private lateinit var developerService: DeveloperService
 
     //todo test
     @ApiOperation(
@@ -97,10 +102,39 @@ class ArticleController {
     )
     @DeleteMapping(value = ["/{id}"])
     fun deleteArticle(@PathVariable("id") id: Long): BaseBean {
+        val authentication = getAuthentication()
+        System.err.println(authentication!!.principal as String)
+        val master = developerService.searchMaster()
         val result = BaseBean()
-        articleService.deleteArticle(id)
-        result.errMessage = "删除成功"
-        return result
+
+        return if (authentication == null) {
+            result.apply {
+                errCode = "401"
+                errMessage = "认证失败"
+            }
+        } else {
+
+            if (authentication.principal == master.nodeId) {
+                articleService.deleteArticle(id)
+                result.apply {
+                    errMessage = "删除成功"
+                }
+            } else {
+                val developer = developerService.searchDeveloperByNodeId(authentication.principal as String)
+                val article = articleService.getArticle(id).get()
+                if (article.author == developer!!.developerName) {
+                    articleService.deleteArticle(id)
+                    result.apply {
+                        errMessage = "删除成功"
+                    }
+                } else {
+                    result.errCode = "403"
+                    result.apply {
+                        errMessage = "无操作权限"
+                    }
+                }
+            }
+        }
     }
 
     //todo test
