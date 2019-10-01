@@ -103,11 +103,10 @@ class ArticleController {
     @DeleteMapping(value = ["/{id}"])
     fun deleteArticle(@PathVariable("id") id: Long): BaseBean {
         val authentication = getAuthentication()
-        System.err.println(authentication!!.principal as String)
         val master = developerService.searchMaster()
         val result = BaseBean()
 
-        return if (authentication.principal == master.nodeId) {
+        return if (authentication!!.principal == master.nodeId) {
             articleService.deleteArticle(id)
             result.apply {
                 errMessage = "删除成功"

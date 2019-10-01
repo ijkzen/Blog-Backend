@@ -26,6 +26,6 @@ interface ArticleRepository : JpaRepository<Article, Long> {
     fun findByTitleContainingAndContentContaining(keywords: String, contents: String): List<Article>
 
     @Modifying
-    @Query("update Article set isDelete=1 where id=?1")
+    @Query("update Article set deleted=1 where id=?1")
     fun deleteArticle(id: Long)
 }
