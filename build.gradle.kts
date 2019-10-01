@@ -34,6 +34,7 @@ dependencies {
     implementation("com.qiniu:qiniu-java-sdk:7.2.+")
     implementation("io.springfox:springfox-swagger2:2.9.2")
     implementation("io.springfox:springfox-swagger-ui:2.9.2")
+    implementation("com.github.ua-parser:uap-java:1.4.3")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
