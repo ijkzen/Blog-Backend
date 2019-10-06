@@ -27,3 +27,5 @@ const val HTTP_DELETE = "DELETE"
 const val AMAP_KEY = "34e66611dde31315bb74c53fef2d468f"
 
 const val EMPTY = "empty"
+
+const val DES = "des"
