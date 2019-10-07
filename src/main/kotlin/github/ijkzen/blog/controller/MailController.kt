@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController
  * @Author ijkzen
  * @Date 2019/10/6
  */
-@ExperimentalStdlibApi
 @Api(
         value = "邮件相关",
         tags = ["邮件相关"],

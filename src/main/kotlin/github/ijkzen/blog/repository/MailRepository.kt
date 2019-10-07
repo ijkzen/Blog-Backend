@@ -14,4 +14,6 @@ interface MailRepository : JpaRepository<Mail, Long> {
     @Modifying
     @Query("update Mail set inUse=0 where inUse=1")
     fun deleteUseless()
+
+    fun findMailByInUseTrue(): Mail
 }

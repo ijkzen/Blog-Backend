@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service
  * @Author ijkzen
  * @Date 2019/10/6
  */
-@ExperimentalStdlibApi
 @Service
 class MailService {
 

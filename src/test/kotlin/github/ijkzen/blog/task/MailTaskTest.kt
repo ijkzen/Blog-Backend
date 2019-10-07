@@ -14,6 +14,10 @@ class MailTaskTest {
 
     @Test
     fun sendMail() {
-        mailTask.sendMail()
+        mailTask.sendMail(
+                "krystalandhola@outlook.com",
+                "2019/10/08 hello world"
+        )
+
     }
 }
