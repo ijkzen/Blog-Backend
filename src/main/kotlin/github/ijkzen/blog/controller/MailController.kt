@@ -81,4 +81,49 @@ class MailController {
             }
         }
     }
+
+    @ApiOperation(
+            value = "测试邮箱配置",
+            notes =
+            """
+                需要权限    
+            """
+    )
+    @ApiImplicitParams(
+            ApiImplicitParam(
+                    name = "receiver",
+                    value = "接收邮箱地址",
+                    required = true,
+                    dataType = "String",
+                    dataTypeClass = String::class
+            ),
+
+            ApiImplicitParam(
+                    name = "subject",
+                    value = "邮件主题",
+                    required = true,
+                    dataType = "String",
+                    dataTypeClass = String::class
+            ),
+            ApiImplicitParam(
+                    name = "text",
+                    value = "邮件内容",
+                    required = true,
+                    dataType = "String",
+                    dataTypeClass = String::class
+            )
+            ,
+            ApiImplicitParam(
+                    name = AUTHORIZATION,
+                    value = "验证身份",
+                    required = true,
+                    dataTypeClass = String::class,
+                    paramType = "header"
+            )
+    )
+    @PostMapping(value = ["/test"])
+    fun test(receiver: String, subject: String, text: String): BaseBean {
+        mailService.sendMail(receiver, subject, text)
+        return BaseBean()
+    }
 }
