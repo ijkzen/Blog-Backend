@@ -34,7 +34,7 @@ class RecordService {
 
         val device = client.device.family
         val time = Date()
-        val ip = request.remoteHost
+        val ip = "114.247.50.2"//request.remoteHost //todo
         val tmp = request.requestURL.toString()
                 .replace("https://", "")
                 .replace("http://", "")

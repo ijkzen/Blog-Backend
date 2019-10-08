@@ -1,5 +1,6 @@
 package github.ijkzen.blog.utils
 
+import org.apache.commons.codec.binary.Base64
 import javax.crypto.Cipher
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.DESKeySpec
@@ -12,14 +13,14 @@ class SecurityUtils {
         fun encryption(plainText: String): String {
             val cipher = Cipher.getInstance(DES)
             cipher.init(Cipher.ENCRYPT_MODE, getSecretKey())
-            return String(cipher.doFinal(plainText.toByteArray()))
+            return Base64().encodeAsString(cipher.doFinal(plainText.toByteArray()))
         }
 
         fun decryption(cipherText: String): String {
             val cipher = Cipher.getInstance(DES)
             cipher.init(Cipher.DECRYPT_MODE, getSecretKey())
-            System.err.println("input length: ${cipherText.toByteArray().size}")
-            return String(cipher.doFinal(cipherText.toByteArray()))
+            val result = Base64().decode(cipherText)
+            return String(cipher.doFinal(result))
         }
 
         private fun getSecretKey() = SecretKeyFactory.getInstance(DES)
