@@ -3,8 +3,8 @@ package github.ijkzen.blog.bean.mail
 import github.ijkzen.blog.utils.EMPTY
 import javax.persistence.*
 
-@Entity
-data class Mail(
+@Entity(name = "Mail")
+data class MailConfigurationBean(
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)

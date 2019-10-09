@@ -36,8 +36,8 @@ class RecordTask {
             it.latitude = (map["rectangle"] ?: "")
                     .split(";")[0]
                     .split(",")[1]
-//todo
-            //recordService.save(it)
+
+            recordService.save(it)
         }
     }
 

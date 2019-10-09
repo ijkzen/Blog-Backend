@@ -1,7 +1,8 @@
 package github.ijkzen.blog.controller
 
 import github.ijkzen.blog.bean.BaseBean
-import github.ijkzen.blog.bean.mail.Mail
+import github.ijkzen.blog.bean.mail.MailConfigurationBean
+import github.ijkzen.blog.bean.mail.MailMessage
 import github.ijkzen.blog.service.DeveloperService
 import github.ijkzen.blog.service.MailService
 import github.ijkzen.blog.utils.AUTHORIZATION
@@ -48,8 +49,8 @@ class MailController {
                     name = "mail",
                     value = "邮件配置信息",
                     required = true,
-                    dataType = "Mail",
-                    dataTypeClass = Mail::class,
+                    dataType = "MailConfigurationBean",
+                    dataTypeClass = MailConfigurationBean::class,
                     paramType = "body"
             ),
             ApiImplicitParam(
@@ -61,7 +62,7 @@ class MailController {
             )
     )
     @PostMapping(value = ["/new"])
-    fun save(@RequestBody mail: Mail): BaseBean {
+    fun save(@RequestBody mail: MailConfigurationBean): BaseBean {
         val result = BaseBean()
         val authentication = getAuthentication()
         val master = developerService.searchMaster()
@@ -91,28 +92,12 @@ class MailController {
     )
     @ApiImplicitParams(
             ApiImplicitParam(
-                    name = "receiver",
-                    value = "接收邮箱地址",
-                    required = true,
-                    dataType = "String",
-                    dataTypeClass = String::class
-            ),
-
-            ApiImplicitParam(
-                    name = "subject",
-                    value = "邮件主题",
-                    required = true,
-                    dataType = "String",
-                    dataTypeClass = String::class
-            ),
-            ApiImplicitParam(
-                    name = "text",
+                    name = "mail",
                     value = "邮件内容",
                     required = true,
-                    dataType = "String",
-                    dataTypeClass = String::class
-            )
-            ,
+                    dataType = "MailMessage",
+                    dataTypeClass = MailMessage::class
+            ),
             ApiImplicitParam(
                     name = AUTHORIZATION,
                     value = "验证身份",
@@ -122,8 +107,8 @@ class MailController {
             )
     )
     @PostMapping(value = ["/test"])
-    fun test(receiver: String, subject: String, text: String): BaseBean {
-        mailService.sendMail(receiver, subject, text)
+    fun test(@RequestBody mail: MailMessage): BaseBean {
+        mailService.sendMail(mail.receiver, mail.subject, mail.text)
         return BaseBean()
     }
 }

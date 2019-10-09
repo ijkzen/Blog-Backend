@@ -5,6 +5,7 @@ import github.ijkzen.blog.bean.comment.Comment
 import github.ijkzen.blog.bean.comment.CommentsBean
 import github.ijkzen.blog.service.CommentService
 import github.ijkzen.blog.service.DeveloperService
+import github.ijkzen.blog.service.MailService
 import github.ijkzen.blog.utils.AUTHORIZATION
 import github.ijkzen.blog.utils.getAuthentication
 import github.ijkzen.blog.utils.unAuthorized
@@ -33,6 +34,9 @@ class CommentController {
 
     @Autowired
     private lateinit var developerService: DeveloperService
+
+    @Autowired
+    private lateinit var mailService: MailService
 
     @ApiOperation(
             value = "根据文章Id获取评论",
@@ -66,6 +70,9 @@ class CommentController {
     @PostMapping(value = ["/new"])
     fun addComment(@RequestBody comment: Comment): BaseBean {
         commentService.addComment(comment)
+        val receiverId = commentService.findCommentById(comment.parent!!).authorId
+        val receiver = developerService.searchDeveloperById(receiverId)
+        mailService.sendMail(receiver.email!!, "新回复", "快来博客看看，你有新的回复了")
         return BaseBean()
     }
 
@@ -128,6 +135,8 @@ class CommentController {
     fun reportComment(@PathVariable id: Long): BaseBean {
         val result = BaseBean()
         commentService.reportComment(id)
+        val master = developerService.searchMaster()
+        mailService.sendMail(master.email!!, "举报评论", "有新的举报评论")
         return result
     }
 

@@ -1,6 +1,6 @@
 package github.ijkzen.blog.service
 
-import github.ijkzen.blog.bean.mail.Mail
+import github.ijkzen.blog.bean.mail.MailConfigurationBean
 import github.ijkzen.blog.repository.MailRepository
 import github.ijkzen.blog.utils.SecurityUtils
 import org.slf4j.LoggerFactory
@@ -26,7 +26,7 @@ class MailService {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun save(mail: Mail) {
+    fun save(mail: MailConfigurationBean) {
         mailRepository.deleteUseless()
         mailRepository.save(
                 mail.apply {
@@ -70,7 +70,7 @@ class MailService {
             )
             message.subject = subject
             val mimeBodyPart = MimeBodyPart()
-            mimeBodyPart.setContent(text, "text/html")
+            mimeBodyPart.setContent(text, "text/plain; charset=UTF-8")
             val multipart = MimeMultipart()
             multipart.addBodyPart(mimeBodyPart)
             message.setContent(multipart)

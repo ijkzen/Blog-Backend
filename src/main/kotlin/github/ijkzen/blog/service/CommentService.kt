@@ -41,4 +41,8 @@ class CommentService {
     fun findReportComments(): List<Comment> {
         return commentRepository.findCommentsByReportedTrue()
     }
+
+    fun findCommentById(id: Long): Comment {
+        return commentRepository.findById(id).get()
+    }
 }

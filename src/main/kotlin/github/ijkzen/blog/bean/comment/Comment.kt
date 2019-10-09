@@ -20,7 +20,7 @@ data class Comment(
         var articleId: Long,
 
         @Column(columnDefinition = "bigint default 0")
-        var parent: Long,
+        var parent: Long?,
 
         @Column(columnDefinition = "timestamp default CURRENT_TIMESTAMP")
         var createdTime: Date,

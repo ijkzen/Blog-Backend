@@ -24,4 +24,8 @@ class DeveloperService {
     fun searchDeveloperByNodeId(nodeId: String): DeveloperBean? {
         return repository.findDeveloperBeanByNodeId(nodeId)
     }
+
+    fun searchDeveloperById(id: Long): DeveloperBean {
+        return repository.findById(id).get()
+    }
 }
