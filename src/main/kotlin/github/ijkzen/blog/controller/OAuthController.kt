@@ -97,6 +97,9 @@ class OAuthController {
             getDeveloperEmail(developer)
         } else {
             developerService.save(developer)
+        }
+
+        if (isFirst!!) {
             createBlogRepository()
         }
     }
@@ -112,7 +115,6 @@ class OAuthController {
         )
         developerBean.email = email.body!!.find { it.primary }!!.email
         developerService.save(developerBean)
-        createBlogRepository()
     }
 
     private fun createBlogRepository() {
@@ -132,9 +134,9 @@ class OAuthController {
             )
             repositoryService.updateArticleRepository(repositoryBean!!)
             File(REPOSITORY_ID).writeText(repositoryBean.id!!.toString())
-            isFirst = false
         }
 
+        isFirst = false
         if (File(REPOSITORY_NAME).exists()) {
             gitService.pullAll()
         } else {
