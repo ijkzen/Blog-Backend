@@ -1,4 +1,4 @@
-name: NextToBlog CI
+name: Create bootJar
 
 on: [push]
 
