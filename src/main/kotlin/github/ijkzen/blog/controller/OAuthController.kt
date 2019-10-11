@@ -13,6 +13,7 @@ import github.ijkzen.blog.utils.*
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiOperation
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
@@ -38,6 +39,8 @@ class OAuthController {
     private lateinit var articleService: ArticleService
 
     private val restTemplate = RestTemplate()
+
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     companion object {
         var isFirst: Boolean? = null
@@ -147,8 +150,12 @@ class OAuthController {
         articleService.completeAll()
     }
 
-    private fun isExistRepository(): Boolean {
+    fun isExistRepository(): Boolean {
         val repos = getRepos()
+        logger.error("start print")
+        repos.forEach {
+            logger.error(it.name)
+        }
         return if (repos.isEmpty()) false else repos.any { it.name == REPOSITORY_NAME }
     }
 
@@ -163,5 +170,16 @@ class OAuthController {
         ).body!!
     }
 
+    fun getMasterId(): Long {
+        val master = developerService.searchMaster()
+        val entity = HttpEntity("", getGithubHeaders(master.token!!))
+        val result = restTemplate.exchange(
+                "https://api.github.com/user",
+                HttpMethod.GET,
+                entity,
+                DeveloperBean::class.java
+        )
 
+        return result.body!!.developerId!!
+    }
 }
