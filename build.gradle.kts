@@ -1,5 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+buildscript {
+    repositories {
+        maven(url = "http://maven.aliyun.com/nexus/content/groups/public/")
+    }
+}
+
 plugins {
     val kotlinVersion = "1.3.50"
     id("org.springframework.boot") version "2.1.8.RELEASE"

@@ -13,11 +13,13 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: Delete repository url
-      run: sed -i '19d' build.gradle.kts
-    - name: Show build.gradle.kts file
+    - name: Delete Plugin Repository
+        run: sed -i '3,7d' build.gradle.kts
+    - name: Delete Dependencies Repository
+      run: sed -i '25d' build.gradle.kts
+    - name: Show build.gradle.kts File
       run: cat build.gradle.kts
-    - name: Update permission for gradlew
+    - name: Update Permission for Gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew --refresh-dependencies bootJar
