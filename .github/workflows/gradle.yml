@@ -16,7 +16,7 @@ jobs:
     - name: Delete Plugin Repository
       run: sed -i '3,7d' build.gradle.kts
     - name: Delete Dependencies Repository
-      run: sed -i '21d' build.gradle.kts
+      run: sed -i '20d' build.gradle.kts
     - name: Show build.gradle.kts File
       run: cat build.gradle.kts
     - name: Update Permission for Gradlew
