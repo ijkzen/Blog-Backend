@@ -10,5 +10,11 @@ jobs:
  
     steps:
     - uses: actions/checkout@v1
+    - name: Delete Plugin Repository
+      run: sed -i '24,27d' build.gradle.kts
+    - name: Delete Dependencies Repository
+      run: sed -i '3,7d' build.gradle.kts
+    - name: Show build.gradle.kts File
+      run: cat build.gradle.kts
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag blog-backend:latest
