@@ -2,6 +2,7 @@ package github.ijkzen.blog.controller
 
 import github.ijkzen.blog.bean.BaseBean
 import github.ijkzen.blog.bean.articles.Article
+import github.ijkzen.blog.bean.articles.NewArticle
 import github.ijkzen.blog.utils.AUTHORIZATION
 import org.codehaus.jackson.map.ObjectMapper
 import org.junit.Assert.assertEquals
@@ -64,7 +65,6 @@ class ArticleControllerTest {
         val result = mock.perform(
                 MockMvcRequestBuilders.post("/article/new")
                         .authorization()
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(objectMapper.writeValueAsString(article))
         )
                 .andExpect(MockMvcResultMatchers.status().isOk)
@@ -75,10 +75,34 @@ class ArticleControllerTest {
 
     @Test
     fun deleteArticle() {
+        val result = mock.perform(
+                MockMvcRequestBuilders.delete("/article/23")
+                        .authorization()
+        )
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andReturn()
+
+        assertEquals("000", objectMapper.readValue(result.response.contentAsString, BaseBean::class.java).errCode)
     }
 
     @Test
     fun editArticle() {
+        val newArticle = NewArticle(
+                null,
+                "ijkzen",
+                2,
+                3
+        )
+
+        val result = mock.perform(
+                MockMvcRequestBuilders.post("/article/edit")
+                        .authorization()
+                        .content(objectMapper.writeValueAsString(newArticle))
+        )
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andReturn()
+
+        assertEquals("000", objectMapper.readValue(result.response.contentAsString, BaseBean::class.java).errCode)
     }
 
 
@@ -86,5 +110,6 @@ class ArticleControllerTest {
 
 fun MockHttpServletRequestBuilder.authorization(): MockHttpServletRequestBuilder {
     this.header(AUTHORIZATION, "MDQ6VXNlcjMxNTMxODM2")
+    this.contentType(MediaType.APPLICATION_JSON_UTF8)
     return this
 }
