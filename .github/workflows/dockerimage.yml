@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Delete Plugin Repository
-      run: sed -i '24,27d' build.gradle.kts
+      run: sed -i '25d' build.gradle.kts
     - name: Delete Dependencies Repository
       run: sed -i '3,7d' build.gradle.kts
     - name: Show build.gradle.kts File
