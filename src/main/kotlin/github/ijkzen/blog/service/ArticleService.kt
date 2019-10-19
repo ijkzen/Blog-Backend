@@ -72,7 +72,7 @@ class ArticleService {
 
         val createdTime = dateFormat.parse(fileName.substring(0, 10))
         var updatedTime: Date? = Date()
-        val `abstract` = showdown.substring(startIndex = 0, endIndex = showdown.length / 3)
+        val `abstract` = getAbstract(showdown)
         var isShow = true
         var id: Long? = null
         var isDelete: Boolean? = false
@@ -199,5 +199,14 @@ class ArticleService {
 
     fun deleteArticle(id: Long) {
         articleRepository.deleteArticle(id)
+    }
+
+    private fun getAbstract(article: String): String {
+        return if (article.length < 150) {
+            article.split("---")[2]
+        } else {
+            val content = article.split("---")[2]
+            content.substring(startIndex = 0, endIndex = if (content.length > 150) 150 else content.length - 1)
+        }
     }
 }

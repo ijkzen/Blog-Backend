@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import ua_parser.Parser
 import java.util.*
+import java.util.regex.Pattern
 import javax.servlet.http.HttpServletRequest
 
 @Service
@@ -34,7 +35,7 @@ class RecordService {
 
         val device = client.device.family
         val time = Date()
-        val ip = "114.247.50.2"//request.remoteHost //todo
+        val ip = request.remoteHost
         val tmp = request.requestURL.toString()
                 .replace("https://", "")
                 .replace("http://", "")
@@ -55,7 +56,9 @@ class RecordService {
                 httpMethod = method
         )
 
-        recordRepository.save(record)
+        if (isIP(record.ip)) {
+            recordRepository.save(record)
+        }
     }
 
     fun getReadyList(): List<RequestRecord> {
@@ -64,5 +67,12 @@ class RecordService {
 
     fun save(requestRecord: RequestRecord) {
         recordRepository.save(requestRecord)
+    }
+
+    private fun isIP(ip: String): Boolean {
+        val regex = "^((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}$"
+        val pattern = Pattern.compile(regex)
+        val matcher = pattern.matcher(ip)
+        return matcher.find() && ip != "127.0.0.1"
     }
 }
