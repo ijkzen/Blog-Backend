@@ -33,7 +33,7 @@ class ArticleService {
         storeArticles()
     }
 
-    private fun storeArticles() {
+    fun storeArticles() {
         File(POST_DIR).listFiles()?.forEach {
             parseMd2Object(it)
         }

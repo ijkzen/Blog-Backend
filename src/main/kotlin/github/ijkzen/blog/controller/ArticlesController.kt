@@ -4,6 +4,7 @@ import github.ijkzen.blog.bean.articles.Article
 import github.ijkzen.blog.bean.articles.ArticleBean
 import github.ijkzen.blog.bean.articles.ArticlesBean
 import github.ijkzen.blog.service.ArticleService
+import github.ijkzen.blog.service.GitService
 import github.ijkzen.blog.utils.ASC
 import github.ijkzen.blog.utils.DESC
 import io.swagger.annotations.Api
@@ -23,6 +24,9 @@ class ArticlesController {
 
     @Autowired
     private lateinit var articleService: ArticleService
+
+    @Autowired
+    private lateinit var gitService: GitService
 
     @ApiOperation(
             value = "根据文章Id获取文章",
@@ -140,5 +144,18 @@ class ArticlesController {
         return result.apply {
             this.list = articleService.getArticlesByKeywords(keywords)
         }
+    }
+
+    @ApiOperation(
+            value = "更新数据库文章",
+            notes =
+            """
+                同步本地修改到数据库，并且提交到仓库    
+            """
+    )
+    @GetMapping(value = ["/update"])
+    fun saveArticles() {
+        articleService.storeArticles()
+        gitService.completeAll()
     }
 }
