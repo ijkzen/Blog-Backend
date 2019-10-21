@@ -99,6 +99,7 @@ class ArticlesController {
     @GetMapping(value = ["/list/{order}/{page}"])
     fun getArticles(@PathVariable("order") order: String, @PathVariable page: Int): ArticlesBean {
         val result = ArticlesBean(null)
+        result.size = articleService.getArticlesDesc().size.toLong()
         when (order.toUpperCase()) {
             DESC -> {
                 result.list = getListForPage(page, articleService.getArticlesDesc())
