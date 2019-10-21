@@ -1,10 +1,12 @@
 package github.ijkzen.blog.controller
 
+import github.ijkzen.blog.bean.BaseBean
 import github.ijkzen.blog.bean.articles.Article
 import github.ijkzen.blog.bean.articles.ArticleBean
 import github.ijkzen.blog.bean.articles.ArticlesBean
 import github.ijkzen.blog.service.ArticleService
 import github.ijkzen.blog.service.GitService
+import github.ijkzen.blog.service.OSSService
 import github.ijkzen.blog.utils.ASC
 import github.ijkzen.blog.utils.DESC
 import io.swagger.annotations.Api
@@ -12,10 +14,7 @@ import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @Api(value = "获取文章", description = "不检查权限", tags = ["获取文章"])
 @RequestMapping("/articles")
@@ -24,6 +23,9 @@ class ArticlesController {
 
     @Autowired
     private lateinit var articleService: ArticleService
+
+    @Autowired
+    private lateinit var ossService: OSSService
 
     @Autowired
     private lateinit var gitService: GitService
@@ -155,7 +157,29 @@ class ArticlesController {
     )
     @GetMapping(value = ["/update"])
     fun saveArticles() {
+        ossService.uploadAllImages()
         articleService.storeArticles()
         gitService.completeAll()
+    }
+
+    @ApiOperation(
+            value = "对应文章的浏览次数加一",
+            notes =
+            """
+                不需要权限，可能会被滥用    
+            """
+    )
+    @ApiImplicitParam(
+            name = "id",
+            value = "文章Id",
+            required = true,
+            paramType = "body"
+    )
+    @PostMapping(value = ["/view"])
+    fun viewArticle(@RequestBody id: Long): BaseBean {
+        val result = BaseBean()
+        val article = articleService.getArticle(id).get()
+        articleService.save(article.apply { this.visits = this.visits?.plus(1) })
+        return result
     }
 }
