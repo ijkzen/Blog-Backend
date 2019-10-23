@@ -1,9 +1,12 @@
 package github.ijkzen.blog.service
 
 import github.ijkzen.blog.bean.articles.Article
+import github.ijkzen.blog.bean.category.Category
 import github.ijkzen.blog.repository.ArticleRepository
 import github.ijkzen.blog.utils.CDN_DOMAIN
 import github.ijkzen.blog.utils.POST_DIR
+import org.hibernate.SessionFactory
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.io.File
@@ -27,6 +30,11 @@ class ArticleService {
 
     @Autowired
     private lateinit var ossService: OSSService
+
+    @Autowired
+    private lateinit var sessionFactory: SessionFactory
+
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     fun completeAll() {
         ossService.uploadAllImages()
@@ -208,5 +216,13 @@ class ArticleService {
             val content = article.split("---")[2]
             content.substring(startIndex = 0, endIndex = if (content.length > 150) 150 else content.length - 1)
         }
+    }
+
+    fun getCategories(): List<Category> {
+        val sql = " select category, count(*) as size from Article group by category"
+        val session = sessionFactory.openSession()
+        val query = session.createQuery(sql)
+        this.logger.error(query.list().toString())
+        return query.list() as List<Category>
     }
 }

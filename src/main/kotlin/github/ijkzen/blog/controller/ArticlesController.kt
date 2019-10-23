@@ -4,6 +4,7 @@ import github.ijkzen.blog.bean.BaseBean
 import github.ijkzen.blog.bean.articles.Article
 import github.ijkzen.blog.bean.articles.ArticleBean
 import github.ijkzen.blog.bean.articles.ArticlesBean
+import github.ijkzen.blog.bean.category.CategoryBean
 import github.ijkzen.blog.service.ArticleService
 import github.ijkzen.blog.service.GitService
 import github.ijkzen.blog.service.OSSService
@@ -182,5 +183,20 @@ class ArticlesController {
         val article = articleService.getArticle(id).get()
         articleService.save(article.apply { this.visits = this.visits?.plus(1) })
         return result
+    }
+
+    @ApiOperation(
+            value = "获取文章的分类",
+            notes =
+            """
+                包括文章类型和该类型下的文章数量    
+            """
+    )
+    @GetMapping(value = ["/categories"])
+    fun getCategories(): CategoryBean {
+        val result = CategoryBean()
+        return result.apply {
+            this.list = articleService.getCategories()
+        }
     }
 }

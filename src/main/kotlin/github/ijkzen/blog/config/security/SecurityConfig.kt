@@ -4,6 +4,7 @@ import github.ijkzen.blog.filter.CommonFilter
 import github.ijkzen.blog.utils.HTTP_DELETE
 import github.ijkzen.blog.utils.HTTP_GET
 import github.ijkzen.blog.utils.HTTP_POST
+import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,6 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import javax.persistence.EntityManagerFactory
+
 
 /**
  * @Author ijkzen
@@ -26,6 +29,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
     private lateinit var authenticationProvider: DeveloperAuthenticationProvider
+
+    @Autowired
+    private lateinit var entityManagerFactory: EntityManagerFactory
+
 
     override fun configure(auth: AuthenticationManagerBuilder?) {
         auth!!.authenticationProvider(authenticationProvider)
@@ -63,5 +70,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source
+    }
+
+    @Bean
+    fun sessionFactory(): SessionFactory {
+        return entityManagerFactory.unwrap(SessionFactory::class.java)
     }
 }
