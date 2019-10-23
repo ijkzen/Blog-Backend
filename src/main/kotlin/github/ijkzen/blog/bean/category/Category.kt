@@ -1,6 +1,6 @@
 package github.ijkzen.blog.bean.category
 
 data class Category(
-        var category: String?,
-        var size: Long
+        var category: String? = "",
+        var size: Long = 0
 )

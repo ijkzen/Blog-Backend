@@ -4,7 +4,6 @@ import github.ijkzen.blog.filter.CommonFilter
 import github.ijkzen.blog.utils.HTTP_DELETE
 import github.ijkzen.blog.utils.HTTP_GET
 import github.ijkzen.blog.utils.HTTP_POST
-import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -70,10 +69,5 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source
-    }
-
-    @Bean
-    fun sessionFactory(): SessionFactory {
-        return entityManagerFactory.unwrap(SessionFactory::class.java)
     }
 }

@@ -1,11 +1,11 @@
 package github.ijkzen.blog.service
 
+import com.alibaba.druid.pool.DruidDataSource
 import github.ijkzen.blog.bean.articles.Article
 import github.ijkzen.blog.bean.category.Category
 import github.ijkzen.blog.repository.ArticleRepository
 import github.ijkzen.blog.utils.CDN_DOMAIN
 import github.ijkzen.blog.utils.POST_DIR
-import org.hibernate.SessionFactory
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -32,7 +32,7 @@ class ArticleService {
     private lateinit var ossService: OSSService
 
     @Autowired
-    private lateinit var sessionFactory: SessionFactory
+    private lateinit var druidDataSource: DruidDataSource
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -219,10 +219,17 @@ class ArticleService {
     }
 
     fun getCategories(): List<Category> {
+        val list = LinkedList<Category>()
         val sql = " select category, count(*) as size from Article group by category"
-        val session = sessionFactory.openSession()
-        val query = session.createQuery(sql)
-        this.logger.error(query.list().toString())
-        return query.list() as List<Category>
+        val stmt = druidDataSource.connection.createStatement()
+        val resultSet = stmt.executeQuery(sql)
+        while (resultSet.next()) {
+            val item = Category()
+            item.category = resultSet.getString("category")
+            item.size = resultSet.getInt("size").toLong()
+            list.add(item)
+        }
+        logger.error(list.toString())
+        return list
     }
 }
