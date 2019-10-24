@@ -230,6 +230,8 @@ class ArticleService {
             list.add(item)
         }
         logger.error(list.toString())
+        stmt.connection.close()
+        stmt.close()
         return list
     }
 }
