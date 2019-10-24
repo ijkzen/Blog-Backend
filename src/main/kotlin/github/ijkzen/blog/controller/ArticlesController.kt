@@ -81,6 +81,7 @@ class ArticlesController {
         val result = ArticlesBean(null)
         return result.apply {
             this.list = articleService.getCategoryArticles(category)
+            this.size = this.list!!.size.toLong()
         }
     }
 
@@ -147,6 +148,7 @@ class ArticlesController {
         val result = ArticlesBean(null)
         return result.apply {
             this.list = articleService.getArticlesByKeywords(keywords)
+            this.size = this.list!!.size.toLong()
         }
     }
 

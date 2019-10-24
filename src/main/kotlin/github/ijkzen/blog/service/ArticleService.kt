@@ -52,7 +52,7 @@ class ArticleService {
     }
 
     fun getCategoryArticles(category: String): List<Article> {
-        return articleRepository.findArticlesByCategoryContaining(category)
+        return articleRepository.findArticlesByShownTrueAndCategoryContaining(category)
     }
 
     fun getArticlesDesc(): List<Article> {
@@ -220,7 +220,7 @@ class ArticleService {
 
     fun getCategories(): List<Category> {
         val list = LinkedList<Category>()
-        val sql = " select category, count(*) as size from Article group by category"
+        val sql = " select category, count(*) as size from Article where shown=1 group by category"
         val stmt = druidDataSource.connection.createStatement()
         val resultSet = stmt.executeQuery(sql)
         while (resultSet.next()) {
