@@ -15,7 +15,10 @@ import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @Api(value = "获取文章", description = "不检查权限", tags = ["获取文章"])
 @RequestMapping("/articles")
@@ -179,8 +182,8 @@ class ArticlesController {
             required = true,
             paramType = "body"
     )
-    @PostMapping(value = ["/view"])
-    fun viewArticle(@RequestBody id: Long): BaseBean {
+    @GetMapping(value = ["/view/{id}"])
+    fun viewArticle(@PathVariable id: Long): BaseBean {
         val result = BaseBean()
         val article = articleService.getArticle(id).get()
         articleService.save(article.apply { this.visits = this.visits?.plus(1) })
