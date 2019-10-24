@@ -9,11 +9,14 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.multipart.MultipartFile
+import java.net.URI
 
 @Api(value = "捐赠相关", description = "存取捐赠的二维码", tags = ["二维码"])
 @RequestMapping(value = ["/donate"])
@@ -92,5 +95,39 @@ class DonateController {
             result.errMessage = "权限不足"
         }
         return result
+    }
+
+    @ApiOperation(
+            value = "获取支付宝付款图片",
+            notes =
+            """
+                当图片不存在时，返回图片错误
+            """
+    )
+    @ResponseBody
+    @GetMapping(value = ["/alipay"], produces = [MediaType.IMAGE_JPEG_VALUE])
+    fun getAlipay(): ByteArray {
+        return if (donateService.transformAliPay().exists()) {
+            donateService.transformAliPay().readBytes()
+        } else {
+            URI("https://cdn.nextto.top/no_pic.png").toURL().readBytes()
+        }
+    }
+
+    @ApiOperation(
+            value = "获取微信付款图片",
+            notes =
+            """
+                当图片不存在时，返回图片错误
+            """
+    )
+    @ResponseBody
+    @GetMapping(value = ["/wechat"], produces = [MediaType.IMAGE_JPEG_VALUE])
+    fun getWechat(): ByteArray {
+        return if (donateService.transformAliPay().exists()) {
+            donateService.transformWechatPay().readBytes()
+        } else {
+            URI("https://cdn.nextto.top/no_pic.png").toURL().readBytes()
+        }
     }
 }
