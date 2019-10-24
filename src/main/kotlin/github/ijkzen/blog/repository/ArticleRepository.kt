@@ -17,13 +17,13 @@ interface ArticleRepository : JpaRepository<Article, Long> {
 
     fun findByFileName(fileName: String): Article
 
-    fun findArticlesByShownTrueAndCategoryContaining(category: String): List<Article>
+    fun findArticlesByShownTrueAndCategoryContainingOrderByCreatedTimeDesc(category: String): List<Article>
 
     fun findByShownTrueAndDeletedFalseOrderByCreatedTimeDesc(): List<Article>
 
     fun findByShownTrueAndDeletedFalseOrderByCreatedTimeAsc(): List<Article>
 
-    fun findByTitleContainingAndContentContaining(keywords: String, contents: String): List<Article>
+    fun findByTitleContainingOrContentContainingOrderByCreatedTimeDesc(keywords: String, contents: String): List<Article>
 
     @Modifying
     @Query("update Article set deleted=1 where id=?1")

@@ -52,7 +52,7 @@ class ArticleService {
     }
 
     fun getCategoryArticles(category: String): List<Article> {
-        return articleRepository.findArticlesByShownTrueAndCategoryContaining(category)
+        return articleRepository.findArticlesByShownTrueAndCategoryContainingOrderByCreatedTimeDesc(category)
     }
 
     fun getArticlesDesc(): List<Article> {
@@ -64,7 +64,7 @@ class ArticleService {
     }
 
     fun getArticlesByKeywords(keywords: String): List<Article> {
-        return articleRepository.findByTitleContainingAndContentContaining(keywords, keywords)
+        return articleRepository.findByTitleContainingOrContentContainingOrderByCreatedTimeDesc(keywords, keywords)
     }
 
     private fun parseMd2Object(markdown: File) {
