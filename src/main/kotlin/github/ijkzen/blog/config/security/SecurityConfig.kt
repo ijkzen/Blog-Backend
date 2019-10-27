@@ -61,6 +61,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                         CommonFilter("/donate/*", authenticationManager(), HTTP_POST),
                         UsernamePasswordAuthenticationFilter::class.java
                 )
+                .addFilterBefore(
+                        CommonFilter("/chat/*", authenticationManager(), HTTP_GET),
+                        UsernamePasswordAuthenticationFilter::class.java
+                )
     }
 
     @Bean
