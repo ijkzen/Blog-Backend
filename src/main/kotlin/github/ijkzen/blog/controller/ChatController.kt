@@ -42,7 +42,7 @@ class ChatController {
         headers.accept = Collections.singletonList(MediaType.APPLICATION_JSON_UTF8)
         headers["Host"] = "m.weibo.cn"
         headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0"
-        headers["Cookie"] = "MLOGIN=1; _T_WM=66979154865; XSRF-TOKEN=9ddfc2; M_WEIBOCN_PARAMS=luicode%3D20000174%26lfid%3D102803; SUB=_2A25wsEDADeRhGeNJ6loV9irEzDqIHXVQW2CIrDV6PUJbkdANLWnFkW1NS_kFlWRtDv-tig3_5nPKJ9LwWTls6dSA; SUHB=09P9eSFRigcg0W; SCF=AhG1hUj3_7emcM1SPS6ULLgGXHg89EGYkdvciXLKPKSaV7MMLT-ocIxsdW-Pqwv3Y8n2oJ9WNmq3swXabOd6juo.; SSOLoginState=1572090000"
+        headers["Cookie"] = "_T_WM=50522080483; SUB=_2A25wtrMqDeRhGeNJ6loV9irEzDqIHXVQWN1irDV6PUJbkdAKLUzEkW1NS_kFlUD1QPkGQ-_6yyHvTswII62Jj-Zv; SUHB=0y0ZqRaZQ_SBI6; MLOGIN=1; XSRF-TOKEN=403239; M_WEIBOCN_PARAMS=luicode%3D10000011%26lfid%3D1076035175429989"
     }
 
 
@@ -94,14 +94,15 @@ class ChatController {
         map.add("fileId", null)
         map.add("uid", "5175429989")
         map.add("content", message)
-        map.add("st", "a5c058")
+        map.add("st", "09e475")
         val entity = HttpEntity(map, getFormHeaders())
-        restTemplate.exchange(
+        val response = restTemplate.exchange(
                 "https://m.weibo.cn/msgDeal/sendMsg?",
                 HttpMethod.POST,
                 entity,
                 String::class.java
         )
+        println(response.body!!)
     }
 
     private fun getChatMessagesList(): ChatMessagesBean {
