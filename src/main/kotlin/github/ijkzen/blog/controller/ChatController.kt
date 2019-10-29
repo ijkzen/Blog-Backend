@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
 import java.util.*
+import java.util.regex.Pattern
 
 /**
  * @Author ijkzen
@@ -74,7 +75,7 @@ class ChatController {
         val authorization = getAuthentication()
         val developer = developerService.searchDeveloperByNodeId(authorization!!.principal.toString())
         return if (developer?.nodeId != null) {
-            sendMessage(message)
+            sendMessage(message, getST())
             val originSize = getChatMessagesList().data.size
             Thread.sleep(5000)
             val currentSize = getChatMessagesList().data.size
@@ -89,19 +90,39 @@ class ChatController {
         }
     }
 
-    private fun sendMessage(message: String) {
+    private fun sendMessage(message: String, st: String) {
         val map = LinkedMultiValueMap<String, String?>()
         map.add("fileId", null)
         map.add("uid", "5175429989")
         map.add("content", message)
-        map.add("st", "a5c058")
+        map.add("st", st)
         val entity = HttpEntity(map, getFormHeaders())
-        restTemplate.exchange(
+        val response = restTemplate.exchange(
                 "https://m.weibo.cn/msgDeal/sendMsg?",
                 HttpMethod.POST,
                 entity,
                 String::class.java
         )
+        println(response.body)
+    }
+
+    fun getST(): String {
+        val entity = HttpEntity("", getSTHeaders())
+        val response = restTemplate.exchange(
+                "https://m.weibo.cn/msg/chat?uid=5175429989&nick=%E5%B0%8F%E5%86%B0&verified_type=0&send_from=user_profile&luicode=10000011&lfid=1005055175429989",
+                HttpMethod.GET,
+                entity,
+                String::class.java
+        )
+
+        val regex = "\"st\":\"([a-zA-Z0-9]{6})\""
+        val pattern = Pattern.compile(regex)
+        val matcher = pattern.matcher(response.body!!)
+        return if (matcher.find()) {
+            matcher.group(1)
+        } else {
+            ""
+        }
     }
 
     private fun getChatMessagesList(): ChatMessagesBean {
@@ -128,6 +149,16 @@ class ChatController {
     private fun getJsonHeaders(): HttpHeaders {
         return headers.apply {
             this.accept = Collections.singletonList(MediaType.APPLICATION_JSON_UTF8)
+            this.remove("Content-Type")
+            this.remove("TE")
+            this.remove("Referer")
+            this.remove("Origin")
+        }
+    }
+
+    private fun getSTHeaders(): HttpHeaders {
+        return headers.apply {
+            this.accept = Collections.singletonList(MediaType.TEXT_HTML)
             this.remove("Content-Type")
             this.remove("TE")
             this.remove("Referer")

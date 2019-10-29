@@ -11,6 +11,7 @@ import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestTemplate
 import java.io.UnsupportedEncodingException
 import java.util.*
+import java.util.regex.Pattern
 
 
 /**
@@ -63,7 +64,6 @@ class XiaoIceTest {
         )
     }
 
-    @Test
     fun getNewMessages() {
 //        val originSize = getChatMessagesListSize()
 //        println("origin size: $originSize")
@@ -142,5 +142,33 @@ class XiaoIceTest {
             ret += str
         }
         return ret
+    }
+
+    @Test
+    fun getST() {
+        val entity = HttpEntity("", getSTHeaders())
+        val response = restTemplate.exchange(
+                "https://m.weibo.cn/msg/chat?uid=5175429989&nick=%E5%B0%8F%E5%86%B0&verified_type=0&send_from=user_profile&luicode=10000011&lfid=1005055175429989",
+                HttpMethod.GET,
+                entity,
+                String::class.java
+        )
+
+        val regex = "\"st\":\"([a-zA-Z0-9]{6})\""
+        val pattern = Pattern.compile(regex)
+        val matcher = pattern.matcher(response.body!!)
+        if (matcher.find()) {
+            println(matcher.group(1))
+        }
+    }
+
+    private fun getSTHeaders(): HttpHeaders {
+        return headers.apply {
+            this.accept = Collections.singletonList(MediaType.TEXT_HTML)
+            this.remove("Content-Type")
+            this.remove("TE")
+            this.remove("Referer")
+            this.remove("Origin")
+        }
     }
 }
