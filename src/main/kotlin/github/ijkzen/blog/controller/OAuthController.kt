@@ -80,10 +80,10 @@ class OAuthController {
                 GithubTokenBean::class.java
         )
 
-        response.sendRedirect("http://localhost:4200/?developerId=${getDeveloperInfo(token!!.accessToken)}")
+        response.sendRedirect("http://localhost:4200/?nodeId=${getDeveloperInfo(token!!.accessToken)}")
     }
 
-    private fun getDeveloperInfo(token: String): Long {
+    private fun getDeveloperInfo(token: String): String {
 
         val entity = HttpEntity("", getGithubHeaders(token))
         val result = restTemplate.exchange(
@@ -109,7 +109,7 @@ class OAuthController {
                 createBlogRepository()
             }.start()
         }
-        return developer.developerId!!
+        return developer.nodeId!!
     }
 
     private fun getDeveloperEmail(developerBean: DeveloperBean) {

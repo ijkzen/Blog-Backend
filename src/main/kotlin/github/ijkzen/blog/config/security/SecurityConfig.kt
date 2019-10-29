@@ -65,6 +65,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                         CommonFilter("/chat/*", authenticationManager(), HTTP_GET),
                         UsernamePasswordAuthenticationFilter::class.java
                 )
+                .addFilterBefore(
+                        CommonFilter("/developer/info", authenticationManager(), HTTP_GET),
+                        UsernamePasswordAuthenticationFilter::class.java
+                )
     }
 
     @Bean

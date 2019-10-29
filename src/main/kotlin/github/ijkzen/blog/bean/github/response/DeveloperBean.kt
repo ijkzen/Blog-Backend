@@ -42,121 +42,121 @@ import javax.persistence.Id
 data class DeveloperBean(
         @Column
         @JsonProperty("login")
-        var developerName: String?,
+        var developerName: String? = null,
 
         @Id
         @JsonProperty("id")
-        var developerId: Long?,
+        var developerId: Long? = null,
 
         @Column
         @JsonProperty("node_id")
-        var nodeId: String?,
+        var nodeId: String? = null,
 
         @Column
         @JsonProperty("avatar_url")
-        var avatarUrl: String?,
+        var avatarUrl: String? = null,
 
         @Column
         @JsonProperty("gravatar_id")
-        var gravatarId: String?,
+        var gravatarId: String? = null,
 
         @Column
         @JsonProperty("url")
-        var url: String?,
+        var url: String? = null,
 
         @Column
         @JsonProperty("html_url")
-        var htmlUrl: String?,
+        var htmlUrl: String? = null,
 
         @Column
         @JsonProperty("followers_url")
-        var followersUrl: String?,
+        var followersUrl: String? = null,
 
         @Column
         @JsonProperty("following_url")
-        var followingUrl: String?,
+        var followingUrl: String? = null,
 
         @Column
         @JsonProperty("gists_url")
-        var gistsUrl: String?,
+        var gistsUrl: String? = null,
 
         @Column
         @JsonProperty("starred_url")
-        var starredUrl: String?,
+        var starredUrl: String? = null,
 
         @Column
         @JsonProperty("subscriptions_url")
-        var subscriptionsUrl: String?,
+        var subscriptionsUrl: String? = null,
 
         @Column
         @JsonProperty("organizations_url")
-        var organizationsUrl: String?,
+        var organizationsUrl: String? = null,
 
         @Column
         @JsonProperty("repos_url")
-        var reposUrl: String?,
+        var reposUrl: String? = null,
 
         @Column
         @JsonProperty("events_url")
-        var eventsUrl: String?,
+        var eventsUrl: String? = null,
 
         @Column
         @JsonProperty("received_events_url")
-        var receivedEventsUrl: String?,
+        var receivedEventsUrl: String? = null,
 
         @Column
         @JsonProperty("type")
-        var type: String?,
+        var type: String? = null,
 
         @Column
         @JsonProperty("site_admin")
-        var siteAdmin: Boolean?,
+        var siteAdmin: Boolean? = false,
 
         @Column
         @JsonProperty("name")
-        var name: String?,
+        var name: String? = null,
 
         @Column
         @JsonProperty("company")
-        var company: String?,
+        var company: String? = null,
 
         @Column
         @JsonProperty("blog")
-        var blog: String?,
+        var blog: String? = null,
 
         @Column
         @JsonProperty("location")
-        var location: String?,
+        var location: String? = null,
 
         @Column
         @JsonProperty("email")
-        var email: String?,
+        var email: String? = null,
 
         @Column
         @JsonProperty("hireable")
-        var hireable: String?,
+        var hireable: String? = null,
 
         @Column
         @JsonProperty("bio")
-        var bio: String?,
+        var bio: String? = null,
 
         @Column
         @JsonProperty("public_repos")
-        var publicRepos: Int?,
+        var publicRepos: Int? = null,
 
         @Column
         @JsonProperty("public_gists")
-        var publicGists: Int?,
+        var publicGists: Int? = null,
 
         @Column
         @JsonProperty("followers")
-        var followers: Int?,
+        var followers: Int? = null,
 
         @Column
         @JsonIgnore
-        var state: String?,
+        var state: String? = null,
 
         @Column
         @JsonIgnore
-        var token: String?
+        var token: String? = null
 )
