@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
 import java.io.File
+import javax.servlet.http.HttpServletResponse
 
 @Api(value = "授权接口", description = "授权接口", tags = ["Github授权"])
 @RestController
@@ -70,7 +71,7 @@ class OAuthController {
     )
     @ApiImplicitParam(name = "code", value = "用来向GitHub申请令牌", required = true, dataType = "String")
     @GetMapping(value = ["/oauth/github"])
-    fun getToken(@RequestParam("code") code: String) {
+    fun getToken(@RequestParam("code") code: String, response: HttpServletResponse) {
         val token = restTemplate.getForObject(
                 "https://github.com/login/oauth/access_token?" +
                         "client_id=$CLIENT_ID" +
@@ -78,10 +79,11 @@ class OAuthController {
                         "&code=$code",
                 GithubTokenBean::class.java
         )
-        getDeveloperInfo(token!!.accessToken)
+
+        response.sendRedirect("http://localhost:4200/?developerId=${getDeveloperInfo(token!!.accessToken)}")
     }
 
-    private fun getDeveloperInfo(token: String) {
+    private fun getDeveloperInfo(token: String): Long {
 
         val entity = HttpEntity("", getGithubHeaders(token))
         val result = restTemplate.exchange(
@@ -103,8 +105,11 @@ class OAuthController {
         }
 
         if (isFirst!!) {
-            createBlogRepository()
+            Thread {
+                createBlogRepository()
+            }.start()
         }
+        return developer.developerId!!
     }
 
     private fun getDeveloperEmail(developerBean: DeveloperBean) {
