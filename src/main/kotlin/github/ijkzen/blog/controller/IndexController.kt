@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
  * @Author ijkzen
  * @Date 2019/10/30
  */
-@Api(value = "记录首页的相关数据", tags = ["首页"])
+@Api(value = "记录首页的相关数据", description = "首页访问数据", tags = ["首页"])
 @RequestMapping("/index")
 @RestController
 class IndexController {

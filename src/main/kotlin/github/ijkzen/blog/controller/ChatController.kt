@@ -27,7 +27,7 @@ import java.util.regex.Pattern
  * @Author ijkzen
  * @Date 2019/10/27
  */
-@Api(value = "和小冰聊天", tags = ["小冰"])
+@Api(value = "和小冰聊天", description = "利用微博的API和小冰聊天", tags = ["小冰"])
 @RequestMapping(value = ["/chat"])
 @RestController
 class ChatController {

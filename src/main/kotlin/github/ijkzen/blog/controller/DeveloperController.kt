@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
  * @Author ijkzen
  * @Date 2019/10/29
  */
-@Api(value = "开发者", tags = ["开发者"])
+@Api(value = "开发者", description = "开发者相关", tags = ["开发者"])
 @RestController
 @RequestMapping("/developer")
 class DeveloperController {
