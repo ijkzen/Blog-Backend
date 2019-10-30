@@ -19,11 +19,13 @@ class DonateService {
     fun receiveAliPay(file: ByteArray) {
         val result = File(ALIPAY)
         result.writeBytes(file)
+        gitService.completeAll("update alipay qrcode")
     }
 
     fun receiveWechatPay(file: ByteArray) {
         val result = File(WECHAT_PAY)
         result.writeBytes(file)
+        gitService.completeAll("update wechat qrcode")
     }
 
     fun transformAliPay(): File {

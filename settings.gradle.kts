@@ -1,1 +1,1 @@
-rootProject.name = "NextTo-Blog"
+rootProject.name = "IJKZEN-BLOG"
