@@ -8,6 +8,7 @@ import org.eclipse.jgit.transport.JschConfigSessionFactory
 import org.eclipse.jgit.transport.OpenSshConfig
 import org.eclipse.jgit.transport.SshTransport
 import org.eclipse.jgit.util.FS
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
@@ -23,6 +24,8 @@ import java.util.*
  */
 @Service
 class GitService {
+
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     val restTemplate = RestTemplate()
 
@@ -93,9 +96,10 @@ class GitService {
     }
 
     fun pushAll() {
+        logger.info("pushed")
         git!!.push().setTransportConfigCallback {
             (it as SshTransport).sshSessionFactory = getSshSessionFactory()
-        }.call()
+        }.setPushAll().call()
     }
 
     fun init() {
@@ -111,6 +115,7 @@ class GitService {
     }
 
     fun completeAll(message: String = "new article") {
+        pullAll()
         addAll()
         commitAll(message)
         pushAll()
