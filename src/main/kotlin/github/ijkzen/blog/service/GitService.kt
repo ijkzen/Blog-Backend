@@ -115,9 +115,9 @@ class GitService {
     }
 
     fun completeAll(message: String = "new article") {
-        pullAll()
         addAll()
         commitAll(message)
+        pullAll()
         pushAll()
     }
 
