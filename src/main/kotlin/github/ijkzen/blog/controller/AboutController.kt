@@ -52,8 +52,9 @@ class AboutController {
         value = "设置about信息",
         notes =
         """
-                需要验证权限，只有站长可以设置    
-            """
+                需要验证权限，只有站长可以设置；
+                about字段是markdown格式
+        """
     )
     @ApiImplicitParams(
         ApiImplicitParam(
