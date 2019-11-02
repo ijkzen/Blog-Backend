@@ -17,10 +17,22 @@ data class Comment(
         var authorId: Long,
 
         @Column
+        var authorName: String?,
+
+        @Column
+        var authorAvatar: String?,
+
+        @Column
         var articleId: Long,
 
+        @Column
+        var articleUrl: String?,
+
         @Column(columnDefinition = "bigint default 0")
-        var parent: Long?,
+        var replyId: Long?,
+
+        @Column
+        var replyName: String?,
 
         @Column(columnDefinition = "timestamp default CURRENT_TIMESTAMP")
         var createdTime: Date,

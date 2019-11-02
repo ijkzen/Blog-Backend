@@ -24,7 +24,7 @@ class CommentService {
 
     fun deleteComment(id: Long) {
         commentRepository.deleteComment(id)
-        commentRepository.findCommentsByParentAndDeletedFalse(id)
+        commentRepository.findCommentsByReplyIdAndDeletedFalse(id)
                 .forEach {
                     deleteComment(it.id!!)
                 }

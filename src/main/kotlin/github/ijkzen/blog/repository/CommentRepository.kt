@@ -17,7 +17,7 @@ interface CommentRepository : JpaRepository<Comment, Long> {
 
     fun findCommentsByArticleIdAndDeletedFalse(articleId: Long): List<Comment>
 
-    fun findCommentsByParentAndDeletedFalse(parent: Long): List<Comment>
+    fun findCommentsByReplyIdAndDeletedFalse(parent: Long): List<Comment>
 
     @Modifying
     @Query("update Comment set deleted=1 where id = ?1")
