@@ -127,7 +127,6 @@ class ArticleController {
         }
     }
 
-    //todo add authorization
     @ApiOperation(
             value = "修改文章记录",
             notes =
