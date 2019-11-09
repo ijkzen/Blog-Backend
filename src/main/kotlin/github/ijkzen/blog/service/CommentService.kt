@@ -25,9 +25,9 @@ class CommentService {
     fun deleteComment(id: Long) {
         commentRepository.deleteComment(id)
         commentRepository.findCommentsByReplyIdAndDeletedFalse(id)
-                .forEach {
-                    deleteComment(it.id!!)
-                }
+            .forEach {
+                deleteComment(it.id!!)
+            }
     }
 
     fun findComments(articleId: Long): List<Comment> {
@@ -44,5 +44,9 @@ class CommentService {
 
     fun findCommentById(id: Long): Comment {
         return commentRepository.findById(id).get()
+    }
+
+    fun getCount(): Long {
+        return commentRepository.count()
     }
 }

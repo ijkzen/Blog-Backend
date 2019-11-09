@@ -1,5 +1,7 @@
 package github.ijkzen.blog.service
 
+import com.alibaba.druid.pool.DruidDataSource
+import github.ijkzen.blog.bean.record.CountBean
 import github.ijkzen.blog.bean.record.RequestRecord
 import github.ijkzen.blog.repository.RecordRepository
 import github.ijkzen.blog.utils.EMPTY
@@ -20,6 +22,9 @@ class RecordService {
     @Autowired
     private lateinit var recordRepository: RecordRepository
 
+    @Autowired
+    private lateinit var druidDataSource: DruidDataSource
+
     fun saveRecord(request: HttpServletRequest) {
         val parser = Parser()
         val client = parser.parse(request.getHeader(USER_AGENT))
@@ -37,23 +42,23 @@ class RecordService {
         val time = Date()
         val ip = request.remoteHost
         val tmp = request.requestURL.toString()
-                .replace("https://", "")
-                .replace("http://", "")
+            .replace("https://", "")
+            .replace("http://", "")
 
         val url = tmp.substring(
-                tmp.indexOf("/")
+            tmp.indexOf("/")
         )
         val method = request.method
         val record = RequestRecord(
-                operatingSystem = operatingSystem,
-                operatingSystemVersion = operatingSystemVersion,
-                browser = browser,
-                browserVersion = browserVersion,
-                device = device,
-                time = time,
-                ip = ip,
-                url = url,
-                httpMethod = method
+            operatingSystem = operatingSystem,
+            operatingSystemVersion = operatingSystemVersion,
+            browser = browser,
+            browserVersion = browserVersion,
+            device = device,
+            time = time,
+            ip = ip,
+            url = url,
+            httpMethod = method
         )
 
         if (isIP(record.ip)) {
@@ -74,5 +79,18 @@ class RecordService {
         val pattern = Pattern.compile(regex)
         val matcher = pattern.matcher(ip)
         return matcher.find() && ip != "127.0.0.1"
+    }
+
+    fun getPeopleCount(): CountBean {
+        val sql = "select count(distinct RequestRecord.ip)  as peopleCount from RequestRecord"
+        val stmt = druidDataSource.connection.createStatement()
+        val resultSet = stmt.executeQuery(sql)
+        val result = CountBean()
+        while (resultSet.next()) {
+            result.count = resultSet.getLong("peopleCount")
+        }
+        stmt.connection.close()
+        stmt.close()
+        return result
     }
 }

@@ -1,5 +1,6 @@
 package github.ijkzen.blog.controller
 
+import github.ijkzen.blog.bean.BaseBean
 import github.ijkzen.blog.bean.developer.Developer
 import github.ijkzen.blog.bean.github.response.DeveloperBean
 import github.ijkzen.blog.service.DeveloperService
@@ -28,33 +29,65 @@ class DeveloperController {
 
     @GetMapping("/info")
     @ApiOperation(
-            value = "获取开发者信息",
-            notes =
-            """
+        value = "获取开发者信息",
+        notes =
+        """
                 获取开发者信息，需要验证身份
             """
     )
     @ApiImplicitParams(
-            ApiImplicitParam(
-                    name = AUTHORIZATION,
-                    value = "验证身份",
-                    required = true,
-                    dataTypeClass = String::class,
-                    paramType = "header"
-            )
+        ApiImplicitParam(
+            name = AUTHORIZATION,
+            value = "验证身份",
+            required = true,
+            dataTypeClass = String::class,
+            paramType = "header"
+        )
     )
     fun getDeveloperInfo(): Developer {
         val authentication = getAuthentication()
         val developer = developerService.searchDeveloperByNodeId(authentication!!.principal.toString())
         val result = DeveloperBean()
         return Developer(
-                result.apply {
-            developer!!
-            developerId = developer.developerId
-            developerName = developer.developerName
-            nodeId = developer.nodeId
-            avatarUrl = developer.avatarUrl
-            htmlUrl = developer.htmlUrl
-        })
+            result.apply {
+                developer!!
+                developerId = developer.developerId
+                developerName = developer.developerName
+                nodeId = developer.nodeId
+                avatarUrl = developer.avatarUrl
+                htmlUrl = developer.htmlUrl
+            })
+    }
+
+
+    @ApiOperation(
+        value = "验证是否为站长",
+        notes =
+        """
+            如果是站长则errCode为000，如果不是则errCode为401 
+        """
+    )
+    @ApiImplicitParams(
+        ApiImplicitParam(
+            name = AUTHORIZATION,
+            value = "验证身份",
+            required = true,
+            dataTypeClass = String::class,
+            paramType = "header"
+        )
+    )
+    @GetMapping("/master")
+    fun checkMaster(): BaseBean {
+        val master = developerService.searchMaster();
+        val authentication = getAuthentication();
+        val result = BaseBean()
+        return if (master.nodeId == authentication!!.principal) {
+            result
+        } else {
+            result.apply {
+                errCode = "500"
+                errMessage = "当前用户不是站长"
+            }
+        }
     }
 }

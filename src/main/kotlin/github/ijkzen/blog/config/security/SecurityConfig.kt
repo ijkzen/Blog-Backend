@@ -15,7 +15,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import javax.persistence.EntityManagerFactory
 
 
 /**
@@ -29,48 +28,48 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Autowired
     private lateinit var authenticationProvider: DeveloperAuthenticationProvider
 
-    @Autowired
-    private lateinit var entityManagerFactory: EntityManagerFactory
-
-
     override fun configure(auth: AuthenticationManagerBuilder?) {
         auth!!.authenticationProvider(authenticationProvider)
     }
 
     override fun configure(http: HttpSecurity?) {
         http!!.cors()
-                .and()
-                .csrf().disable()
-                .addFilterBefore(
-                        CommonFilter("/article/*", authenticationManager()),
-                        UsernamePasswordAuthenticationFilter::class.java
-                )
-                .addFilterBefore(
-                        CommonFilter("/comment/*", authenticationManager(), HTTP_DELETE),
-                        UsernamePasswordAuthenticationFilter::class.java
-                )
-                .addFilterBefore(
-                        CommonFilter("/comment/report/list", authenticationManager(), HTTP_GET),
-                        UsernamePasswordAuthenticationFilter::class.java
-                )
-                .addFilterBefore(
-                        CommonFilter("/mail/new", authenticationManager(), HTTP_POST),
-                        UsernamePasswordAuthenticationFilter::class.java
-                )
-                .addFilterBefore(
-                        CommonFilter("/donate/*", authenticationManager(), HTTP_POST),
-                        UsernamePasswordAuthenticationFilter::class.java
-                )
-                .addFilterBefore(
-                        CommonFilter("/chat/*", authenticationManager(), HTTP_GET),
-                        UsernamePasswordAuthenticationFilter::class.java
-                )
-                .addFilterBefore(
-                        CommonFilter("/developer/info", authenticationManager(), HTTP_GET),
-                        UsernamePasswordAuthenticationFilter::class.java
-                )
+            .and()
+            .csrf().disable()
+            .addFilterBefore(
+                CommonFilter("/article/*", authenticationManager()),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
+            .addFilterBefore(
+                CommonFilter("/comment/*", authenticationManager(), HTTP_DELETE),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
+            .addFilterBefore(
+                CommonFilter("/comment/report/list", authenticationManager(), HTTP_GET),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
+            .addFilterBefore(
+                CommonFilter("/mail/new", authenticationManager(), HTTP_POST),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
+            .addFilterBefore(
+                CommonFilter("/donate/*", authenticationManager(), HTTP_POST),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
+            .addFilterBefore(
+                CommonFilter("/chat/*", authenticationManager(), HTTP_GET),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
+            .addFilterBefore(
+                CommonFilter("/developer/info", authenticationManager(), HTTP_GET),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
             .addFilterBefore(
                 CommonFilter("/about/me", authenticationManager(), HTTP_POST),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
+            .addFilterBefore(
+                CommonFilter("/developer/master", authenticationManager(), HTTP_GET),
                 UsernamePasswordAuthenticationFilter::class.java
             )
     }

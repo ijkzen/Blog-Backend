@@ -3,6 +3,7 @@ package github.ijkzen.blog.controller
 import github.ijkzen.blog.bean.BaseBean
 import github.ijkzen.blog.bean.record.CountBean
 import github.ijkzen.blog.service.IndexRecordService
+import github.ijkzen.blog.service.RecordService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,6 +22,9 @@ class IndexController {
 
     @Autowired
     private lateinit var indexService: IndexRecordService
+
+    @Autowired
+    private lateinit var recordService: RecordService
 
     @ApiOperation(
         value = "记录首页访问数据",
@@ -42,11 +46,22 @@ class IndexController {
             不需要权限    
         """
     )
-    @GetMapping("view")
+    @GetMapping("/view")
     fun view(): CountBean {
         val result = CountBean()
         return result.apply {
             count = indexService.getViewCount()
         }
+    }
+
+    @ApiOperation(
+        value = "获取网站访问人数",
+        notes = """
+            根据IP分辨
+        """
+    )
+    @GetMapping("/people")
+    fun peopleCount(): CountBean {
+        return recordService.getPeopleCount()
     }
 }

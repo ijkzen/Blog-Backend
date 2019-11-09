@@ -3,6 +3,7 @@ package github.ijkzen.blog.controller
 import github.ijkzen.blog.bean.BaseBean
 import github.ijkzen.blog.bean.comment.Comment
 import github.ijkzen.blog.bean.comment.CommentsBean
+import github.ijkzen.blog.bean.record.CountBean
 import github.ijkzen.blog.service.CommentService
 import github.ijkzen.blog.service.DeveloperService
 import github.ijkzen.blog.service.MailService
@@ -21,9 +22,9 @@ import org.springframework.web.bind.annotation.*
  * @Date 2019/9/30
  */
 @Api(
-        value = "评论接口",
-        tags = ["评论相关"],
-        description = "不需要检查权限"
+    value = "评论接口",
+    tags = ["评论相关"],
+    description = "不需要检查权限"
 )
 @RestController
 @RequestMapping(value = ["/comment"])
@@ -39,9 +40,9 @@ class CommentController {
     private lateinit var mailService: MailService
 
     @ApiOperation(
-            value = "根据文章Id获取评论",
-            notes =
-            """
+        value = "根据文章Id获取评论",
+        notes =
+        """
                 只会返回没有被删掉的评论;
                 不存在的文章Id或者没有评论的文章会返回空数组;
             """
@@ -54,18 +55,18 @@ class CommentController {
     }
 
     @ApiOperation(
-            value = "添加评论",
-            notes =
-            """
+        value = "添加评论",
+        notes =
+        """
                 id字段填写与否并不重要，后台会擦除入库                        
             """
     )
     @ApiImplicitParam(
-            name = "comment",
-            value = "评论实体",
-            required = true,
-            dataTypeClass = Comment::class,
-            dataType = "Comment"
+        name = "comment",
+        value = "评论实体",
+        required = true,
+        dataTypeClass = Comment::class,
+        dataType = "Comment"
     )
     @PostMapping(value = ["/new"])
     fun addComment(@RequestBody comment: Comment): BaseBean {
@@ -81,26 +82,26 @@ class CommentController {
     }
 
     @ApiOperation(
-            value = "删除评论",
-            notes =
-            """
+        value = "删除评论",
+        notes =
+        """
                 级联删除当前评论下的所有评论，此API需要验证站长权限
             """
     )
     @ApiImplicitParams(
-            ApiImplicitParam(
-                    name = AUTHORIZATION,
-                    value = "验证身份",
-                    required = true,
-                    dataTypeClass = String::class,
-                    paramType = "header"
-            ),
-            ApiImplicitParam(
-                    name = "id",
-                    value = "被删除的评论id",
-                    required = true,
-                    dataTypeClass = Long::class
-            )
+        ApiImplicitParam(
+            name = AUTHORIZATION,
+            value = "验证身份",
+            required = true,
+            dataTypeClass = String::class,
+            paramType = "header"
+        ),
+        ApiImplicitParam(
+            name = "id",
+            value = "被删除的评论id",
+            required = true,
+            dataTypeClass = Long::class
+        )
     )
     @DeleteMapping(value = ["/{id}"])
     fun deleteComment(@PathVariable id: Long): BaseBean {
@@ -122,17 +123,17 @@ class CommentController {
     }
 
     @ApiOperation(
-            value = "举报评论",
-            notes =
-            """
+        value = "举报评论",
+        notes =
+        """
                 此处不需要权限，可能会被滥用，以后可能会添加权限    
             """
     )
     @ApiImplicitParam(
-            name = "id",
-            value = "举报的评论Id",
-            required = true,
-            dataTypeClass = Long::class
+        name = "id",
+        value = "举报的评论Id",
+        required = true,
+        dataTypeClass = Long::class
 
     )
     @GetMapping(value = ["/report/{id}"])
@@ -145,18 +146,18 @@ class CommentController {
     }
 
     @ApiOperation(
-            value = "获取举报评论列表",
-            notes =
-            """
+        value = "获取举报评论列表",
+        notes =
+        """
                 资源比较敏感，所以只有站长可以获取
             """
     )
     @ApiImplicitParam(
-            name = AUTHORIZATION,
-            value = "验证身份",
-            required = true,
-            dataTypeClass = String::class,
-            paramType = "header"
+        name = AUTHORIZATION,
+        value = "验证身份",
+        required = true,
+        dataTypeClass = String::class,
+        paramType = "header"
     )
     @GetMapping(value = ["/report/list"])
     fun getReportComments(): CommentsBean {
@@ -174,5 +175,16 @@ class CommentController {
                 unAuthorized(result) as CommentsBean
             }
         }
+    }
+
+    @ApiOperation(
+        value = "获取评论总数"
+    )
+    @GetMapping("/count")
+    fun getCommentsCount(): CountBean {
+        return CountBean()
+            .apply {
+                count = commentService.getCount()
+            }
     }
 }
