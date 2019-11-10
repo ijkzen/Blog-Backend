@@ -63,12 +63,12 @@ class GitService {
     fun cloneRepository() {
         val fullName = repositoryService.findArticleRepo().fullName
         Git.cloneRepository()
-                .setURI("git@github.com:$fullName.git")
-                .setDirectory(File(REPOSITORY_NAME))
-                .setTransportConfigCallback {
-                    (it as SshTransport).sshSessionFactory = getSshSessionFactory()
-                }
-                .call()
+            .setURI("git@github.com:$fullName.git")
+            .setDirectory(File(REPOSITORY_NAME))
+            .setTransportConfigCallback {
+                (it as SshTransport).sshSessionFactory = getSshSessionFactory()
+            }
+            .call()
     }
 
     fun deleteRemoteRepository(): Boolean {
@@ -76,10 +76,10 @@ class GitService {
         val token = developerService.searchMaster().token
         val entity = HttpEntity("", getGithubHeaders(token!!))
         val result = restTemplate.exchange(
-                "https://api.github.com/repos/$fullName",
-                HttpMethod.DELETE,
-                entity,
-                String::class.java
+            "https://api.github.com/repos/$fullName",
+            HttpMethod.DELETE,
+            entity,
+            String::class.java
         )
         return 204 == result.statusCodeValue
     }
@@ -91,8 +91,8 @@ class GitService {
     fun commitAll(message: String) {
         val developer = developerService.searchMaster()
         git!!.commit()
-                .setAuthor(developer.developerName, developer.email)
-                .setMessage(message).call()
+            .setAuthor(developer.developerName, developer.email)
+            .setMessage(message).call()
     }
 
     fun pushAll() {
@@ -125,5 +125,17 @@ class GitService {
         git!!.pull().setTransportConfigCallback {
             (it as SshTransport).sshSessionFactory = getSshSessionFactory()
         }.call()
+    }
+
+    fun setSsh(bytes: ByteArray) {
+        val rsa = File(".ssh/id_rsa")
+        if (rsa.exists()) {
+            rsa.delete()
+            rsa.writeBytes(bytes)
+        } else {
+            val sshDir = File(".ssh")
+            if (!sshDir.exists()) sshDir.mkdir()
+            rsa.writeBytes(bytes)
+        }
     }
 }
