@@ -8,6 +8,7 @@ import github.ijkzen.blog.repository.ArticleRepository
 import github.ijkzen.blog.repository.OSSRepository
 import github.ijkzen.blog.service.oos.AliyunOSS
 import github.ijkzen.blog.service.oos.QiNiuOSS
+import github.ijkzen.blog.utils.DOMAIN
 import github.ijkzen.blog.utils.POST_DIR
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -45,23 +46,23 @@ class ArticleService {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private lateinit var oss: OSS
+    private var oss: OSS? = null
 
     fun completeAll() {
         val list = ossRepository.findByInUseIsTrue()
         if (list == null || list.isEmpty()) {
         } else {
             oss = list[0]
-            if (oss.category == "aliyun") {
+            if (oss!!.category == "aliyun") {
                 aliyunOSS.uploadAllImages()
-            } else if (oss.category == "qiniu") {
+            } else if (oss!!.category == "qiniu") {
                 qiNiuOss.uploadAllImages()
             }
         }
         storeArticles()
     }
 
-    fun storeArticles() {
+    private fun storeArticles() {
         File(POST_DIR).listFiles()?.forEach {
             parseMd2Object(it)
         }
@@ -209,7 +210,7 @@ class ArticleService {
         val regex = "!\\[.*?]\\(\\.\\./assets/images.*?\\)"
         val pattern = Pattern.compile(regex)
         val matcher = pattern.matcher(markdown)
-        val cdn = oss.cdnDomain
+        val cdn = if (oss == null) DOMAIN else oss!!.cdnDomain
         while (matcher.find()) {
             val result = matcher.group(0)
             val description = result.substring(result.indexOf("["), result.indexOf("]"))
@@ -231,7 +232,7 @@ class ArticleService {
 
     private fun getAbstract(article: String): String {
         return if (article.length < 150) {
-            article.split("---")[2]
+            if (article.split("---").size < 3) "" else article.split("---")[2]
         } else {
             val content = article.split("---")[2]
             content.substring(startIndex = 0, endIndex = if (content.length > 150) 150 else content.length - 1)

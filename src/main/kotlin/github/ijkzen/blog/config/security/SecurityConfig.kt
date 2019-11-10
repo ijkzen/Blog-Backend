@@ -72,6 +72,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 CommonFilter("/developer/master", authenticationManager(), HTTP_GET),
                 UsernamePasswordAuthenticationFilter::class.java
             )
+            .addFilterBefore(
+                CommonFilter("/oss/set", authenticationManager(), HTTP_POST),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
     }
 
     @Bean

@@ -4,7 +4,9 @@ import github.ijkzen.blog.bean.BaseBean
 import github.ijkzen.blog.bean.oss.OSS
 import github.ijkzen.blog.repository.OSSRepository
 import github.ijkzen.blog.service.ArticleService
+import github.ijkzen.blog.service.DeveloperService
 import github.ijkzen.blog.utils.AUTHORIZATION
+import github.ijkzen.blog.utils.getAuthentication
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
@@ -29,6 +31,9 @@ class OSSController {
 
     @Autowired
     private lateinit var articleService: ArticleService
+
+    @Autowired
+    private lateinit var developerService: DeveloperService
 
     @ApiOperation(
         value = "设置OSS",
@@ -56,15 +61,24 @@ class OSSController {
     )
     @PostMapping("/set")
     fun setOSS(@RequestBody newOSS: OSS): BaseBean {
-        ossRepository.deleteUseless()
-        newOSS.id = null
-        newOSS.inUse = true
-        ossRepository.save(newOSS)
+        val authentication = getAuthentication()
+        val master = developerService.searchMaster()
+        return if (authentication!!.principal == master.nodeId) {
+            ossRepository.deleteUseless()
+            newOSS.id = null
+            newOSS.inUse = true
+            ossRepository.save(newOSS)
 
-        Thread {
-            articleService.completeAll()
-        }.start()
+            Thread {
+                articleService.completeAll()
+            }.start()
 
-        return BaseBean()
+            BaseBean()
+        } else {
+            BaseBean().apply {
+                errMessage = "权限不足"
+                errCode = "401"
+            }
+        }
     }
 }
