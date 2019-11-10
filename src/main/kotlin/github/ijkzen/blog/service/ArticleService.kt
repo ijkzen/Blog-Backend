@@ -171,7 +171,7 @@ class ArticleService {
     fun getCategories(markdown: String): String {
         val meta = getMeta(markdown)
         return if (meta == null) {
-            ""
+            "undefined"
         } else {
             val parts = meta.split("\n")
             var categories: String?
