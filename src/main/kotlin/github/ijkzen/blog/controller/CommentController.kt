@@ -74,10 +74,14 @@ class CommentController {
         if (comment.replyId != null) {
             val receiverId = commentService.findCommentById(comment.replyId!!).authorId
             val receiver = developerService.searchDeveloperById(receiverId)
-            mailService.sendMail(receiver.email!!, "新回复", "快来博客 ${comment.articleUrl} 看看，你有新的回复了")
+            Thread {
+                mailService.sendMail(receiver.email!!, "新回复", "快来博客 ${comment.articleUrl} 看看，你有新的回复了")
+            }.start()
         }
         val master = developerService.searchMaster()
-        mailService.sendMail(master.email!!, "新回复", "快来博客 ${comment.articleUrl} 看看，你有新的回复了")
+        Thread {
+            mailService.sendMail(master.email!!, "新回复", "快来博客 ${comment.articleUrl} 看看，你有新的回复了")
+        }.start()
         return BaseBean()
     }
 

@@ -14,11 +14,6 @@ const val IMAGES_DIR = "$ASSETS_DIR/images"
 
 const val ABOUT_MD = "$REPOSITORY_NAME/about.md"
 
-const val BUCKET = "solo-static-resource"
-const val AK = "Jq2o09Qb3NtJxv_nzioY_buuIKLUERb-Rycu1f-k"
-const val SK = "NvUkpOTYV6rDTT510A0oo9t47Qq_r8q_1yCgH3WP"
-const val CDN_DOMAIN = "https://cdn.nextto.top"
-
 const val DESC = "DESC"
 const val ASC = "ASC"
 
