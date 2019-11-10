@@ -7,7 +7,6 @@ import github.ijkzen.blog.bean.articles.ArticlesBean
 import github.ijkzen.blog.bean.category.CategoryBean
 import github.ijkzen.blog.service.ArticleService
 import github.ijkzen.blog.service.GitService
-import github.ijkzen.blog.service.OSSService
 import github.ijkzen.blog.utils.ASC
 import github.ijkzen.blog.utils.DESC
 import io.swagger.annotations.Api
@@ -27,9 +26,6 @@ class ArticlesController {
 
     @Autowired
     private lateinit var articleService: ArticleService
-
-    @Autowired
-    private lateinit var ossService: OSSService
 
     @Autowired
     private lateinit var gitService: GitService
@@ -164,8 +160,7 @@ class ArticlesController {
     )
     @GetMapping(value = ["/update"])
     fun saveArticles() {
-        ossService.uploadAllImages()
-        articleService.storeArticles()
+        articleService.completeAll()
         gitService.completeAll()
     }
 

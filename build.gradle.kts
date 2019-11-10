@@ -44,6 +44,7 @@ dependencies {
     implementation("com.github.ua-parser:uap-java:1.4.3")
     implementation("javax.mail:mail:1.5.0-b01")
     implementation("commons-codec:commons-codec:1.13")
+    implementation("com.aliyun.oss:aliyun-sdk-oss:3.7.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

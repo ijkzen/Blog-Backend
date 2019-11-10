@@ -15,7 +15,7 @@ import javax.transaction.Transactional
 @Transactional
 interface ArticleRepository : JpaRepository<Article, Long> {
 
-    fun findByFileName(fileName: String): Article
+    fun findByFileNameAndAndShownTrue(fileName: String): Article
 
     fun findArticlesByShownTrueAndCategoryContainingOrderByCreatedTimeDesc(category: String): List<Article>
 

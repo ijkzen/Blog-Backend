@@ -3,8 +3,11 @@ package github.ijkzen.blog.service
 import com.alibaba.druid.pool.DruidDataSource
 import github.ijkzen.blog.bean.articles.Article
 import github.ijkzen.blog.bean.category.Category
+import github.ijkzen.blog.bean.oss.OSS
 import github.ijkzen.blog.repository.ArticleRepository
-import github.ijkzen.blog.utils.CDN_DOMAIN
+import github.ijkzen.blog.repository.OSSRepository
+import github.ijkzen.blog.service.oos.AliyunOSS
+import github.ijkzen.blog.service.oos.QiNiuOSS
 import github.ijkzen.blog.utils.POST_DIR
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,15 +32,32 @@ class ArticleService {
     private lateinit var articleRepository: ArticleRepository
 
     @Autowired
-    private lateinit var ossService: OSSService
+    private lateinit var qiNiuOss: QiNiuOSS
+
+    @Autowired
+    private lateinit var aliyunOSS: AliyunOSS
+
+    @Autowired
+    private lateinit var ossRepository: OSSRepository
 
     @Autowired
     private lateinit var druidDataSource: DruidDataSource
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
+    private lateinit var oss: OSS
+
     fun completeAll() {
-        ossService.uploadAllImages()
+        val list = ossRepository.findByInUseIsTrue()
+        if (list == null || list.isEmpty()) {
+        } else {
+            oss = list[0]
+            if (oss.category == "aliyun") {
+                aliyunOSS.uploadAllImages()
+            } else if (oss.category == "qiniu") {
+                qiNiuOss.uploadAllImages()
+            }
+        }
         storeArticles()
     }
 
@@ -85,7 +105,7 @@ class ArticleService {
         var id: Long? = null
         var isDelete: Boolean? = false
         if (exist(fileName)) {
-            val originArticle = articleRepository.findByFileName(fileName)
+            val originArticle = articleRepository.findByFileNameAndAndShownTrue(fileName)
             visits = originArticle.visits ?: 0
             commentId = originArticle.commentId ?: 0
             isShow = originArticle.shown ?: true
@@ -97,21 +117,21 @@ class ArticleService {
             }
         }
         articleRepository.save(
-                Article(
-                        id,
-                        fileName,
-                        author,
-                        isShow,
-                        isDelete,
-                        title,
-                        category,
-                        visits,
-                        commentId,
-                        createdTime,
-                        updatedTime,
-                        content,
-                        abstract
-                )
+            Article(
+                id,
+                fileName,
+                author,
+                isShow,
+                isDelete,
+                title,
+                category,
+                visits,
+                commentId,
+                createdTime,
+                updatedTime,
+                content,
+                abstract
+            )
         )
     }
 
@@ -189,13 +209,13 @@ class ArticleService {
         val regex = "!\\[.*?]\\(\\.\\./assets/images.*?\\)"
         val pattern = Pattern.compile(regex)
         val matcher = pattern.matcher(markdown)
-        val cdn = if (ossService.getOssInUse() == null) CDN_DOMAIN else ossService.getOssInUse()!!.cdnDomain
+        val cdn = oss.cdnDomain
         while (matcher.find()) {
             val result = matcher.group(0)
             val description = result.substring(result.indexOf("["), result.indexOf("]"))
-                    .replace("[", "")
-                    .replace("]", "")
-                    .trim()
+                .replace("[", "")
+                .replace("]", "")
+                .trim()
 
             val url = cdn + result.substring(result.indexOf("/images"), result.length - 1)
             tmp = tmp.replace(result, "![$description]($url)")
