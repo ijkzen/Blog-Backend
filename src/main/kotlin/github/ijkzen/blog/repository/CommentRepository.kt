@@ -28,4 +28,8 @@ interface CommentRepository : JpaRepository<Comment, Long> {
     fun reportComment(id: Long)
 
     fun findCommentsByReportedTrue(): List<Comment>
+
+    @Modifying
+    @Query("update Comment set reported=0 where id= ?1")
+    fun cancelComment(id: Long)
 }

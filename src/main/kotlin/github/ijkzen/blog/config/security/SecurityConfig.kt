@@ -79,6 +79,13 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .addFilterBefore(
                 CommonFilter("/ssh/new", authenticationManager(), HTTP_POST),
                 UsernamePasswordAuthenticationFilter::class.java
+            ).addFilterBefore(
+                CommonFilter("/comment/batchDelete", authenticationManager(), HTTP_POST),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
+            .addFilterBefore(
+                CommonFilter("/comment/batchCancel", authenticationManager(), HTTP_POST),
+                UsernamePasswordAuthenticationFilter::class.java
             )
     }
 

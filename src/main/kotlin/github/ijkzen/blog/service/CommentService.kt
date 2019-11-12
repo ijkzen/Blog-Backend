@@ -49,4 +49,8 @@ class CommentService {
     fun getCount(): Long {
         return commentRepository.count()
     }
+
+    fun cancelReport(id: Long) {
+        commentRepository.cancelComment(id)
+    }
 }

@@ -191,4 +191,74 @@ class CommentController {
                 count = commentService.getCount()
             }
     }
+
+    @ApiOperation(
+        value = "批量删除评论",
+        notes = "站长专用"
+    )
+    @ApiImplicitParams(
+        ApiImplicitParam(
+            name = AUTHORIZATION,
+            value = "验证身份",
+            required = true,
+            dataTypeClass = String::class,
+            paramType = "header"
+        ),
+        ApiImplicitParam(
+            name = "list",
+            value = "要删除的评论列表",
+            required = true,
+            dataTypeClass = List::class,
+            dataType = "List",
+            paramType = "body"
+        )
+    )
+    @PostMapping("/batchDelete")
+    fun batchDeleteComment(@RequestBody list: List<Long>): BaseBean {
+        val authentication = getAuthentication()
+        val master = developerService.searchMaster()
+        return if (authentication!!.principal == master.nodeId) {
+            list.forEach {
+                commentService.deleteComment(it)
+            }
+            BaseBean()
+        } else {
+            unAuthorized(BaseBean())
+        }
+    }
+
+    @ApiOperation(
+        value = "批量取消举报评论",
+        notes = "站长专用"
+    )
+    @ApiImplicitParams(
+        ApiImplicitParam(
+            name = AUTHORIZATION,
+            value = "验证身份",
+            required = true,
+            dataTypeClass = String::class,
+            paramType = "header"
+        ),
+        ApiImplicitParam(
+            name = "list",
+            value = "要取消举报的评论列表",
+            required = true,
+            dataTypeClass = List::class,
+            dataType = "List",
+            paramType = "body"
+        )
+    )
+    @PostMapping("/batchCancel")
+    fun batchCancelReport(@RequestBody list: List<Long>): BaseBean {
+        val authentication = getAuthentication()
+        val master = developerService.searchMaster()
+        return if (authentication!!.principal == master.nodeId) {
+            list.forEach {
+                commentService.cancelReport(it)
+            }
+            BaseBean()
+        } else {
+            unAuthorized(BaseBean())
+        }
+    }
 }
