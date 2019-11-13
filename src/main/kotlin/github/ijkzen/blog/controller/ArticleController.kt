@@ -172,6 +172,7 @@ class ArticleController {
         notes = """"
             需要站长权限，将其他用户对文章的修改，写到原来的文章中;
             将该用户添加到文章感谢名录，并且提交到仓库;
+            并且发送邮件到该用户
             """
     )
     @ApiImplicitParams(
