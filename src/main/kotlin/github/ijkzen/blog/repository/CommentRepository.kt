@@ -27,7 +27,7 @@ interface CommentRepository : JpaRepository<Comment, Long> {
     @Query("update Comment set reported=1 where id= ?1")
     fun reportComment(id: Long)
 
-    fun findCommentsByReportedTrue(): List<Comment>
+    fun findCommentsByReportedTrueAndDeletedFalse(): List<Comment>
 
     @Modifying
     @Query("update Comment set reported=0 where id= ?1")

@@ -39,7 +39,7 @@ class CommentService {
     }
 
     fun findReportComments(): List<Comment> {
-        return commentRepository.findCommentsByReportedTrue()
+        return commentRepository.findCommentsByReportedTrueAndDeletedFalse()
     }
 
     fun findCommentById(id: Long): Comment {
