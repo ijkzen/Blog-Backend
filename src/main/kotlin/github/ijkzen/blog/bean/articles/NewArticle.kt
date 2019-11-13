@@ -17,5 +17,11 @@ data class NewArticle(
         @Column(nullable = false)
         var origin: Long?,
         @Column(nullable = false)
-        var latest: Long?
+        var latest: Long?,
+        @Column(nullable = false)
+        var processed: Boolean,
+        @Column(nullable = false)
+        var articleName: String?,
+        @Column(nullable = false)
+        var fileName: String
 )

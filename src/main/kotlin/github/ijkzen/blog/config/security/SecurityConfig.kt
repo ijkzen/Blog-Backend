@@ -87,6 +87,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 CommonFilter("/comment/batchCancel", authenticationManager(), HTTP_POST),
                 UsernamePasswordAuthenticationFilter::class.java
             )
+            .addFilterBefore(
+                CommonFilter("/article/apply/*", authenticationManager(), HTTP_GET),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
     }
 
     @Bean

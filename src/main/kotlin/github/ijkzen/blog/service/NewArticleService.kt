@@ -19,5 +19,9 @@ class NewArticleService {
     fun save(newArticle: NewArticle) {
         newArticleRepository.save(newArticle)
     }
+
+    fun find(id: Long): NewArticle {
+        return newArticleRepository.findById(id).get()
+    }
 }
 

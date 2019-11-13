@@ -28,4 +28,8 @@ class DeveloperService {
     fun searchDeveloperById(id: Long): DeveloperBean {
         return repository.findById(id).get()
     }
+
+    fun searchDeveloperByName(name: String): DeveloperBean {
+        return repository.findDeveloperBeanByDeveloperName(name)!!
+    }
 }

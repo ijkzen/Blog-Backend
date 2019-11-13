@@ -101,6 +101,7 @@ class ArticleService {
 
         val createdTime = dateFormat.parse(fileName.substring(0, 10))
         var updatedTime: Date? = Date()
+        var contributors: String? = ""
         val `abstract` = getAbstract(showdown)
         var isShow = true
         var id: Long? = null
@@ -112,6 +113,7 @@ class ArticleService {
             isShow = originArticle.shown ?: true
             id = originArticle.id ?: -1
             isDelete = originArticle.deleted ?: false
+            contributors = originArticle.contributors
 
             if (content == originArticle.content) {
                 updatedTime = originArticle.updatedTime
@@ -131,6 +133,7 @@ class ArticleService {
                 createdTime,
                 updatedTime,
                 content,
+                contributors,
                 abstract
             )
         )
