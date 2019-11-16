@@ -91,6 +91,14 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 CommonFilter("/article/apply/*", authenticationManager(), HTTP_GET),
                 UsernamePasswordAuthenticationFilter::class.java
             )
+            .addFilterBefore(
+                CommonFilter("/article/cancel/*", authenticationManager(), HTTP_GET),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
+            .addFilterBefore(
+                CommonFilter("/article/edit/list", authenticationManager(), HTTP_GET),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
     }
 
     @Bean

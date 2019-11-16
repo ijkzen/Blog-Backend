@@ -3,6 +3,7 @@ package github.ijkzen.blog.controller
 import github.ijkzen.blog.bean.BaseBean
 import github.ijkzen.blog.bean.articles.Article
 import github.ijkzen.blog.bean.articles.NewArticle
+import github.ijkzen.blog.bean.articles.NewArticlesBean
 import github.ijkzen.blog.service.*
 import github.ijkzen.blog.utils.*
 import io.swagger.annotations.Api
@@ -211,12 +212,79 @@ class ArticleController {
             Thread {
                 gitService.completeAll("update article: ${record.articleName}")
                 val developer = developerService.searchDeveloperByName(record.developerName!!)
-                mailService.sendMail(developer.email!!, "修改合并", "感谢您的贡献，您在 $DOMAIN/article/${record.origin} 的修改已被合并")
+                mailService.sendMail(developer.email!!, "修改合并", "感谢您的贡献，您在 ${record.articleUrl} 的修改已被合并")
             }.start()
 
             BaseBean()
         } else {
             unAuthorized(BaseBean())
+        }
+    }
+
+    @ApiOperation(
+        value = "删除某条文章修改记录",
+        notes = """"
+            需要站长权限，删除文章修改记录
+            """
+    )
+    @ApiImplicitParams(
+        ApiImplicitParam(
+            name = AUTHORIZATION,
+            value = "验证身份",
+            required = true,
+            dataTypeClass = String::class,
+            paramType = "header"
+        ),
+        ApiImplicitParam(
+            name = "newArticleId",
+            value = "修改记录",
+            required = true,
+            paramType = "path"
+        )
+    )
+    @GetMapping("/cancel/{newArticleId}")
+    fun cancelArticle(@PathVariable newArticleId: Long): BaseBean {
+        val authentication = getAuthentication()
+        val master = developerService.searchMaster()
+        return if (authentication!!.principal == master.nodeId) {
+            val newArticle = newArticleService.find(newArticleId)
+            newArticleService.save(newArticle.apply { processed = true })
+            val developer = developerService.searchDeveloperByName(newArticle.developerName!!)
+            Thread {
+                mailService.sendMail(
+                    developer.email!!,
+                    "文章修改未通过",
+                    "非常抱歉，您对 ${newArticle.articleUrl} 的修改未通过站长的审核"
+                )
+            }.start()
+
+            BaseBean()
+        } else {
+            unAuthorized(BaseBean())
+        }
+    }
+
+    @ApiOperation(
+        value = "获取文章修改列表",
+        notes = """
+            需要站长权限，获取未处理的文章修改记录
+        """
+    )
+    @ApiImplicitParam(
+        name = AUTHORIZATION,
+        value = "验证身份",
+        required = true,
+        dataTypeClass = String::class,
+        paramType = "header"
+    )
+    @GetMapping("/edit/list")
+    fun getEditArticleList(): NewArticlesBean {
+        val authentication = getAuthentication()
+        val master = developerService.searchMaster()
+        return if (authentication!!.principal == master.nodeId) {
+            NewArticlesBean().apply { list = newArticleService.getEditList() }
+        } else {
+            unAuthorized(BaseBean()) as NewArticlesBean
         }
     }
 }

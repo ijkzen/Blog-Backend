@@ -23,5 +23,9 @@ class NewArticleService {
     fun find(id: Long): NewArticle {
         return newArticleRepository.findById(id).get()
     }
+
+    fun getEditList(): List<NewArticle> {
+        return newArticleRepository.findByProcessedFalse()
+    }
 }
 
