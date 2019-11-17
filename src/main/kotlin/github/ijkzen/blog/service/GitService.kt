@@ -62,13 +62,15 @@ class GitService {
 
     fun cloneRepository() {
         val fullName = repositoryService.findArticleRepo().fullName
-        Git.cloneRepository()
-            .setURI("git@github.com:$fullName.git")
-            .setDirectory(File(REPOSITORY_NAME))
-            .setTransportConfigCallback {
-                (it as SshTransport).sshSessionFactory = getSshSessionFactory()
-            }
-            .call()
+        if (File(".ssh/id_rsa").exists()) {
+            Git.cloneRepository()
+                .setURI("git@github.com:$fullName.git")
+                .setDirectory(File(REPOSITORY_NAME))
+                .setTransportConfigCallback {
+                    (it as SshTransport).sshSessionFactory = getSshSessionFactory()
+                }
+                .call()
+        }
     }
 
     fun deleteRemoteRepository(): Boolean {
@@ -85,21 +87,27 @@ class GitService {
     }
 
     fun addAll() {
-        git!!.add().addFilepattern(".").call()
+        if (isAllowed()) {
+            git!!.add().addFilepattern(".").call()
+        }
     }
 
     fun commitAll(message: String) {
         val developer = developerService.searchMaster()
-        git!!.commit()
-            .setAuthor(developer.developerName, developer.email)
-            .setMessage(message).call()
+        if (isAllowed()) {
+            git!!.commit()
+                .setAuthor(developer.developerName, developer.email)
+                .setMessage(message).call()
+        }
     }
 
     fun pushAll() {
-        logger.info("pushed")
-        git!!.push().setTransportConfigCallback {
-            (it as SshTransport).sshSessionFactory = getSshSessionFactory()
-        }.setPushAll().call()
+        if (isAllowed()) {
+            logger.info("pushed")
+            git!!.push().setTransportConfigCallback {
+                (it as SshTransport).sshSessionFactory = getSshSessionFactory()
+            }.setPushAll().call()
+        }
     }
 
     fun init() {
@@ -115,6 +123,9 @@ class GitService {
     }
 
     fun completeAll(message: String = "new article") {
+        if (!isAllowed()) {
+            cloneRepository()
+        }
         addAll()
         commitAll(message)
         pullAll()
@@ -122,9 +133,11 @@ class GitService {
     }
 
     fun pullAll() {
-        git!!.pull().setTransportConfigCallback {
-            (it as SshTransport).sshSessionFactory = getSshSessionFactory()
-        }.call()
+        if (isAllowed()) {
+            git!!.pull().setTransportConfigCallback {
+                (it as SshTransport).sshSessionFactory = getSshSessionFactory()
+            }.call()
+        }
     }
 
     fun setSsh(bytes: ByteArray) {
@@ -138,4 +151,6 @@ class GitService {
             rsa.writeBytes(bytes)
         }
     }
+
+    private fun isAllowed() = File(".ssh/id_rsa").exists()
 }

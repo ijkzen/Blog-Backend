@@ -109,7 +109,6 @@ class OAuthController {
         if (isFirst!!) {
             Thread {
                 createBlogRepository()
-                setWebHook()
             }.start()
         }
         return developer.nodeId!!
@@ -146,7 +145,7 @@ class OAuthController {
             repositoryService.updateArticleRepository(repositoryBean!!)
             File(REPOSITORY_ID).writeText(repositoryBean.id!!.toString())
         }
-
+        setWebHook()
         isFirst = false
         if (File(REPOSITORY_NAME).exists()) {
             gitService.pullAll()
