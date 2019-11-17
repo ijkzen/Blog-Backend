@@ -156,10 +156,9 @@ class ArticlesController {
             """
     )
     @PostMapping(value = ["/update"])
-    @GetMapping(value = ["/update"])
     fun saveArticles() {
-        articleService.completeAll()
         gitService.completeAll()
+        articleService.completeAll()
     }
 
     @ApiOperation(

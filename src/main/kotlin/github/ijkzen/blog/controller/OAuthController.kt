@@ -147,7 +147,7 @@ class OAuthController {
         }
         setWebHook()
         isFirst = false
-        if (File(REPOSITORY_NAME).exists()) {
+        if (File(".ssh/id_rsa").exists() && File(REPOSITORY_NAME).exists()) {
             gitService.pullAll()
         } else {
             gitService.cloneRepository()
