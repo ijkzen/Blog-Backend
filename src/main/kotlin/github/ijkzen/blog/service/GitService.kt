@@ -43,6 +43,9 @@ class GitService {
             return object : JschConfigSessionFactory() {
 
                 override fun configure(hc: OpenSshConfig.Host?, session: Session?) {
+                    val config = Properties()
+                    config["StrictHostKeyChecking"] = "no";
+                    session?.setConfig(config)
                 }
 
                 override fun createDefaultJSch(fs: FS?): JSch {
