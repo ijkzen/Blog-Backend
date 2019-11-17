@@ -14,10 +14,7 @@ import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @Api(value = "获取文章", description = "不检查权限", tags = ["获取文章"])
 @RequestMapping("/articles")
@@ -31,9 +28,9 @@ class ArticlesController {
     private lateinit var gitService: GitService
 
     @ApiOperation(
-            value = "根据文章Id获取文章",
-            notes =
-            """
+        value = "根据文章Id获取文章",
+        notes =
+        """
             如果文章Id不存在会返回，
                 {
                 errCode: "404",
@@ -43,10 +40,10 @@ class ArticlesController {
             """
     )
     @ApiImplicitParam(
-            name = "id",
-            value = "文章Id",
-            required = true,
-            dataTypeClass = Long::class
+        name = "id",
+        value = "文章Id",
+        required = true,
+        dataTypeClass = Long::class
     )
     @GetMapping(value = ["/{id}"])
     fun getArticle(@PathVariable("id") id: Long): ArticleBean {
@@ -63,17 +60,17 @@ class ArticlesController {
     }
 
     @ApiOperation(
-            value = "根据文章类型获取文章列表",
-            notes =
-            """
+        value = "根据文章类型获取文章列表",
+        notes =
+        """
                 如果该类型不存在，文章列表为空
             """
     )
     @ApiImplicitParam(
-            name = "category",
-            value = "文章分类",
-            required = true,
-            dataTypeClass = String::class
+        name = "category",
+        value = "文章分类",
+        required = true,
+        dataTypeClass = String::class
     )
     @GetMapping(value = ["/category/{category}"])
     fun getCategoryArticles(@PathVariable("category") category: String): ArticlesBean {
@@ -85,17 +82,17 @@ class ArticlesController {
     }
 
     @ApiOperation(
-            value = "按照升序或者降序获取文章分页",
-            notes =
-            """
+        value = "按照升序或者降序获取文章分页",
+        notes =
+        """
                 order的值有"DESC"和"ASC"，分别对应降序和升序，以文章创建时间为标准；
                 每页文章有15篇，如果总计有18篇文章，应该只有2页，第2页只有3篇文章，
                 但是如果违规访问第3页，则会返回最后15篇文章
             """
     )
     @ApiImplicitParams(
-            ApiImplicitParam(name = "order", value = "DESC|ASC, 标记升序降序", required = true, dataTypeClass = String::class),
-            ApiImplicitParam(name = "page", value = "页数", required = true, dataTypeClass = Int::class)
+        ApiImplicitParam(name = "order", value = "DESC|ASC, 标记升序降序", required = true, dataTypeClass = String::class),
+        ApiImplicitParam(name = "page", value = "页数", required = true, dataTypeClass = Int::class)
     )
     @GetMapping(value = ["/list/{order}/{page}"])
     fun getArticles(@PathVariable("order") order: String, @PathVariable page: Int): ArticlesBean {
@@ -130,17 +127,17 @@ class ArticlesController {
     }
 
     @ApiOperation(
-            value = "通过关键词，获取文章列表",
-            notes =
-            """
+        value = "通过关键词，获取文章列表",
+        notes =
+        """
                 关键词会在文章标题和文章内容同时搜索    
             """
     )
     @ApiImplicitParam(
-            name = "keywords",
-            value = "关键词",
-            required = true,
-            dataTypeClass = String::class
+        name = "keywords",
+        value = "关键词",
+        required = true,
+        dataTypeClass = String::class
     )
     @GetMapping(value = ["/search/{keywords}"])
     fun getArticlesByKeywords(@PathVariable("keywords") keywords: String): ArticlesBean {
@@ -152,12 +149,13 @@ class ArticlesController {
     }
 
     @ApiOperation(
-            value = "更新数据库文章",
-            notes =
-            """
+        value = "更新数据库文章",
+        notes =
+        """
                 同步本地修改到数据库，并且提交到仓库    
             """
     )
+    @PostMapping(value = ["/update"])
     @GetMapping(value = ["/update"])
     fun saveArticles() {
         articleService.completeAll()
@@ -165,17 +163,17 @@ class ArticlesController {
     }
 
     @ApiOperation(
-            value = "对应文章的浏览次数加一",
-            notes =
-            """
+        value = "对应文章的浏览次数加一",
+        notes =
+        """
                 不需要权限，可能会被滥用    
             """
     )
     @ApiImplicitParam(
-            name = "id",
-            value = "文章Id",
-            required = true,
-            paramType = "body"
+        name = "id",
+        value = "文章Id",
+        required = true,
+        paramType = "body"
     )
     @GetMapping(value = ["/view/{id}"])
     fun viewArticle(@PathVariable id: Long): BaseBean {
@@ -186,9 +184,9 @@ class ArticlesController {
     }
 
     @ApiOperation(
-            value = "获取文章的分类",
-            notes =
-            """
+        value = "获取文章的分类",
+        notes =
+        """
                 包括文章类型和该类型下的文章数量    
             """
     )
@@ -198,5 +196,17 @@ class ArticlesController {
         return result.apply {
             this.list = articleService.getCategories()
         }
+    }
+
+    @ApiOperation(
+        value = "获取所有的文章",
+        notes = """
+            获取所有状态正常的文章，按照时间降序排列
+        """
+    )
+    @GetMapping(value = ["/full"])
+    fun getFullArticles(): ArticlesBean {
+        val list = articleService.getArticlesDesc()
+        return ArticlesBean(list, list.size.toLong())
     }
 }

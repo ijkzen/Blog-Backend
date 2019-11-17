@@ -1,6 +1,8 @@
 package github.ijkzen.blog.controller
 
 import github.ijkzen.blog.bean.github.request.RepositoryEntity
+import github.ijkzen.blog.bean.github.request.WebHook
+import github.ijkzen.blog.bean.github.request.WebHookConfig
 import github.ijkzen.blog.bean.github.response.DeveloperBean
 import github.ijkzen.blog.bean.github.response.GithubEmailBean
 import github.ijkzen.blog.bean.github.response.GithubTokenBean
@@ -62,9 +64,9 @@ class OAuthController {
     }
 
     @ApiOperation(
-            value = "Github授权回调URL",
-            notes =
-            """
+        value = "Github授权回调URL",
+        notes =
+        """
                 授权成功后，Github会自动访问；
                 成功回调后，会获取开发者信息，并且创建仓库，初始化仓库，完成首次提交
             """
@@ -73,24 +75,24 @@ class OAuthController {
     @GetMapping(value = ["/oauth/github"])
     fun getToken(@RequestParam("code") code: String, response: HttpServletResponse) {
         val token = restTemplate.getForObject(
-                "https://github.com/login/oauth/access_token?" +
-                        "client_id=$CLIENT_ID" +
-                        "&client_secret=$CLIENT_SECRET" +
-                        "&code=$code",
-                GithubTokenBean::class.java
+            "https://github.com/login/oauth/access_token?" +
+                    "client_id=$CLIENT_ID" +
+                    "&client_secret=$CLIENT_SECRET" +
+                    "&code=$code",
+            GithubTokenBean::class.java
         )
 
         response.sendRedirect("http://localhost:4200/?nodeId=${getDeveloperInfo(token!!.accessToken)}")
     }
 
     private fun getDeveloperInfo(token: String): String {
-
+        logger.error("token: $token")
         val entity = HttpEntity("", getGithubHeaders(token))
         val result = restTemplate.exchange(
-                "https://api.github.com/user",
-                HttpMethod.GET,
-                entity,
-                DeveloperBean::class.java
+            "https://api.github.com/user",
+            HttpMethod.GET,
+            entity,
+            DeveloperBean::class.java
         )
 
         val developer = result.body!!
@@ -107,6 +109,7 @@ class OAuthController {
         if (isFirst!!) {
             Thread {
                 createBlogRepository()
+                setWebHook()
             }.start()
         }
         return developer.nodeId!!
@@ -116,10 +119,10 @@ class OAuthController {
 
         val entity = HttpEntity("", getGithubHeaders(developerBean.token!!))
         val email = restTemplate.exchange(
-                "https://api.github.com/user/emails",
-                HttpMethod.GET,
-                entity,
-                Array<GithubEmailBean>::class.java
+            "https://api.github.com/user/emails",
+            HttpMethod.GET,
+            entity,
+            Array<GithubEmailBean>::class.java
         )
         developerBean.email = email.body!!.find { it.primary }!!.email
         developerService.save(developerBean)
@@ -136,9 +139,9 @@ class OAuthController {
             val repository = RepositoryEntity(REPOSITORY_NAME)
             val entity = HttpEntity(repository, getGithubHeaders(developer.token!!))
             val repositoryBean = restTemplate.postForObject(
-                    "https://api.github.com//user/repos",
-                    entity,
-                    RepositoryBean::class.java
+                "https://api.github.com//user/repos",
+                entity,
+                RepositoryBean::class.java
             )
             repositoryService.updateArticleRepository(repositoryBean!!)
             File(REPOSITORY_ID).writeText(repositoryBean.id!!.toString())
@@ -168,10 +171,10 @@ class OAuthController {
         val developer = developerService.searchMaster()
         val entity = HttpEntity("", getGithubHeaders(developer.token!!))
         return restTemplate.exchange(
-                "https://api.github.com/user/repos",
-                HttpMethod.GET,
-                entity,
-                Array<RepositoryBean>::class.java
+            "https://api.github.com/user/repos",
+            HttpMethod.GET,
+            entity,
+            Array<RepositoryBean>::class.java
         ).body!!
     }
 
@@ -179,12 +182,33 @@ class OAuthController {
         val master = developerService.searchMaster()
         val entity = HttpEntity("", getGithubHeaders(master.token!!))
         val result = restTemplate.exchange(
-                "https://api.github.com/user",
-                HttpMethod.GET,
-                entity,
-                DeveloperBean::class.java
+            "https://api.github.com/user",
+            HttpMethod.GET,
+            entity,
+            DeveloperBean::class.java
         )
 
         return result.body!!.developerId!!
+    }
+
+    fun setWebHook() {
+        val master = developerService.searchMaster()
+        val hook = WebHook()
+        hook.name = "web"
+        hook.events = listOf("push")
+        hook.active = true
+        hook.config = WebHookConfig().apply {
+            url = "$DOMAIN/articles/update"
+            contentType = "json"
+            insecureSsl = "0"
+        }
+        val entity = HttpEntity(hook, getGithubHeaders(master.token!!))
+        val result = restTemplate.exchange(
+            "https://api.github.com/repos/${master.developerName}/$REPOSITORY_NAME/hooks",
+            HttpMethod.POST,
+            entity,
+            String::class.java
+        )
+        logger.debug(result.body)
     }
 }
