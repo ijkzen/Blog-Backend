@@ -152,5 +152,5 @@ class GitService {
         }
     }
 
-    private fun isAllowed() = File(".ssh/id_rsa").exists()
+    private fun isAllowed() = File(".ssh/id_rsa").exists() && File(REPOSITORY_NAME).exists()
 }
