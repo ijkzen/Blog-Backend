@@ -82,7 +82,7 @@ class OAuthController {
             GithubTokenBean::class.java
         )
 
-        response.sendRedirect("http://localhost:4200/?nodeId=${getDeveloperInfo(token!!.accessToken)}")
+        response.sendRedirect("$FRONT/?nodeId=${getDeveloperInfo(token!!.accessToken)}")
     }
 
     private fun getDeveloperInfo(token: String): String {
