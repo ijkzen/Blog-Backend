@@ -175,23 +175,37 @@ class OAuthController {
     }
 
     fun setWebHook() {
-        val master = developerService.searchMaster()
-        val hook = WebHook()
-        hook.name = "web"
-        hook.events = listOf("push")
-        hook.active = true
-        hook.config = WebHookConfig().apply {
-            url = "$DOMAIN/articles/update"
-            contentType = "json"
-            insecureSsl = "0"
+        if (!webHookExistence()) {
+            val master = developerService.searchMaster()
+            val hook = WebHook()
+            hook.name = "web"
+            hook.events = listOf("push")
+            hook.active = true
+            hook.config = WebHookConfig().apply {
+                url = "$DOMAIN/articles/update"
+                contentType = "json"
+                insecureSsl = "0"
+            }
+            val entity = HttpEntity(hook, getGithubHeaders(master.token!!))
+            val result = restTemplate.exchange(
+                "https://api.github.com/repos/${master.developerName}/$REPOSITORY_NAME/hooks",
+                HttpMethod.POST,
+                entity,
+                String::class.java
+            )
+            logger.debug(result.body)
         }
-        val entity = HttpEntity(hook, getGithubHeaders(master.token!!))
+    }
+
+    fun webHookExistence(): Boolean {
+        val master = developerService.searchMaster()
+        val entity = HttpEntity("", getGithubHeaders(master.token!!))
         val result = restTemplate.exchange(
             "https://api.github.com/repos/${master.developerName}/$REPOSITORY_NAME/hooks",
-            HttpMethod.POST,
+            HttpMethod.GET,
             entity,
-            String::class.java
+            List::class.java
         )
-        logger.debug(result.body)
+        return result.body!!.isNotEmpty()
     }
 }
