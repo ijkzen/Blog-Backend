@@ -28,4 +28,4 @@ const val EMPTY = "empty"
 const val DES = "des"
 //todo
 const val DOMAIN = "https://api.ijkzen.tech"
-const val FRONT = "https://ijkzen.tech"
+const val FRONT = "https://www.ijkzen.tech"
