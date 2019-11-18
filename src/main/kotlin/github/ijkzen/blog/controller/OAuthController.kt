@@ -60,7 +60,7 @@ class OAuthController {
         notes =
         """
                 授权成功后，Github会自动访问；
-                成功回调后，会获取开发者信息，并且创建仓库，初始化仓库，完成首次提交
+                成功回调后，会获取开发者信息，并且创建仓库
             """
     )
     @ApiImplicitParam(name = "code", value = "用来向GitHub申请令牌", required = true, dataType = "String")

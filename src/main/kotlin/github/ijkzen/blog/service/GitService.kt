@@ -44,7 +44,7 @@ class GitService {
 
                 override fun configure(hc: OpenSshConfig.Host?, session: Session?) {
                     val config = Properties()
-                    config["StrictHostKeyChecking"] = "no";
+                    config["StrictHostKeyChecking"] = "no"
                     session?.setConfig(config)
                 }
 
@@ -87,10 +87,6 @@ class GitService {
             String::class.java
         )
         return 204 == result.statusCodeValue
-    }
-
-    fun getLogSize(): Int {
-        return git!!.log().call().count()
     }
 
     fun addAll() {

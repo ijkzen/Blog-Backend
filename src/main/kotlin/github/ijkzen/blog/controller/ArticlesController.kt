@@ -152,12 +152,12 @@ class ArticlesController {
         value = "更新数据库文章",
         notes =
         """
-                同步本地修改到数据库，并且提交到仓库    
+                拉去仓库修改，同步到数据库    
             """
     )
     @PostMapping(value = ["/update"])
     fun saveArticles() {
-        gitService.completeAll()
+        gitService.pullAll()
         articleService.completeAll()
     }
 
