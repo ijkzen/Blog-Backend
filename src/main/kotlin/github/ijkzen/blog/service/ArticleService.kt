@@ -50,6 +50,7 @@ class ArticleService {
 
     fun completeAll() {
         val list = ossRepository.findByInUseIsTrue()
+        logger.info("oss size: ${list?.size}")
         if (list == null || list.isEmpty()) {
         } else {
             oss = list[0]
@@ -65,6 +66,7 @@ class ArticleService {
     private fun storeArticles() {
         File(POST_DIR).listFiles()?.forEach {
             parseMd2Object(it)
+            logger.info("File ${it.name} complete")
         }
     }
 
