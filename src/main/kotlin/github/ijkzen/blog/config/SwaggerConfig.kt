@@ -1,5 +1,6 @@
 package github.ijkzen.blog.config
 
+import github.ijkzen.blog.utils.DOMAIN
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import springfox.documentation.builders.ApiInfoBuilder
@@ -29,19 +30,20 @@ class SwaggerConfig {
     @Bean
     fun createSwagger(): Docket {
         return Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(createSwaggerInfo())
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("github.ijkzen.blog.controller"))
-                .paths(PathSelectors.any())
-                .build()
+            .host(DOMAIN)
+            .apiInfo(createSwaggerInfo())
+            .select()
+            .apis(RequestHandlerSelectors.basePackage("github.ijkzen.blog.controller"))
+            .paths(PathSelectors.any())
+            .build()
     }
 
     fun createSwaggerInfo(): ApiInfo {
         return ApiInfoBuilder()
-                .title("NextTo-Blog 后台接口文档")
-                .description("描述博客接口")
-                .contact(Contact(NAME, URL, EMAIL))
-                .version("0.0.1")
-                .build()
+            .title("NextTo-Blog 后台接口文档")
+            .description("描述博客接口")
+            .contact(Contact(NAME, URL, EMAIL))
+            .version("0.0.1")
+            .build()
     }
 }
