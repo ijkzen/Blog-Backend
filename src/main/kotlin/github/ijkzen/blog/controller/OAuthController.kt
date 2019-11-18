@@ -7,9 +7,7 @@ import github.ijkzen.blog.bean.github.response.DeveloperBean
 import github.ijkzen.blog.bean.github.response.GithubEmailBean
 import github.ijkzen.blog.bean.github.response.GithubTokenBean
 import github.ijkzen.blog.bean.github.response.RepositoryBean
-import github.ijkzen.blog.service.ArticleService
 import github.ijkzen.blog.service.DeveloperService
-import github.ijkzen.blog.service.GitService
 import github.ijkzen.blog.service.RepositoryService
 import github.ijkzen.blog.utils.*
 import io.swagger.annotations.Api
@@ -34,12 +32,6 @@ class OAuthController {
 
     @Autowired
     private lateinit var repositoryService: RepositoryService
-
-    @Autowired
-    private lateinit var gitService: GitService
-
-    @Autowired
-    private lateinit var articleService: ArticleService
 
     private val restTemplate = RestTemplate()
 
@@ -147,14 +139,6 @@ class OAuthController {
         }
         setWebHook()
         isFirst = false
-        if (File(".ssh/id_rsa").exists() && File(REPOSITORY_NAME).exists()) {
-            gitService.pullAll()
-        } else {
-            gitService.cloneRepository()
-            gitService.init()
-        }
-
-        articleService.completeAll()
     }
 
     fun isExistRepository(): Boolean {

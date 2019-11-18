@@ -89,6 +89,10 @@ class GitService {
         return 204 == result.statusCodeValue
     }
 
+    fun getLogSize(): Int {
+        return git!!.log().call().count()
+    }
+
     fun addAll() {
         if (isAllowed()) {
             git!!.add().addFilepattern(".").call()
@@ -114,15 +118,20 @@ class GitService {
     }
 
     fun init() {
-        File(POST_DIR).mkdir()
-        File(ASSETS_DIR).mkdir()
-        File(IMAGES_DIR).mkdir()
-        val readme = "README.md"
-        val format = SimpleDateFormat("yyyy-MM-dd")
-        val targetReadMe = "${format.format(Date())}-$readme"
-        File("$REPOSITORY_NAME/$readme").copyTo(File("$POST_DIR/$targetReadMe"))
-        File("$REPOSITORY_NAME/$readme").copyTo(File("$IMAGES_DIR/$targetReadMe"))
-        completeAll("init repo")
+        if (File(".ssh/id_rsa").exists() && !File(REPOSITORY_NAME).exists()) {
+            cloneRepository()
+            if (!File(POST_DIR).exists()) {
+                File(POST_DIR).mkdir()
+                File(ASSETS_DIR).mkdir()
+                File(IMAGES_DIR).mkdir()
+                val readme = "README.md"
+                val format = SimpleDateFormat("yyyy-MM-dd")
+                val targetReadMe = "${format.format(Date())}-$readme"
+                File("$REPOSITORY_NAME/$readme").copyTo(File("$POST_DIR/$targetReadMe"))
+                File("$REPOSITORY_NAME/$readme").copyTo(File("$IMAGES_DIR/$targetReadMe"))
+                completeAll("init repo")
+            }
+        }
     }
 
     fun completeAll(message: String = "new article") {
@@ -153,6 +162,8 @@ class GitService {
             if (!sshDir.exists()) sshDir.mkdir()
             rsa.writeBytes(bytes)
         }
+
+        init()
     }
 
     private fun isAllowed() = File(".ssh/id_rsa").exists() && File(REPOSITORY_NAME).exists()
