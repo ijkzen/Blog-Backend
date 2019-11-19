@@ -1,6 +1,5 @@
 package github.ijkzen.blog.service
 
-import com.alibaba.druid.pool.DruidDataSource
 import github.ijkzen.blog.bean.articles.Article
 import github.ijkzen.blog.bean.category.Category
 import github.ijkzen.blog.bean.oss.OSS
@@ -10,13 +9,18 @@ import github.ijkzen.blog.service.oos.AliyunOSS
 import github.ijkzen.blog.service.oos.QiNiuOSS
 import github.ijkzen.blog.utils.DOMAIN
 import github.ijkzen.blog.utils.POST_DIR
+import org.hibernate.Session
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.io.File
+import java.math.BigInteger
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
+import javax.transaction.Transactional
 import kotlin.collections.ArrayList
 
 /**
@@ -41,8 +45,8 @@ class ArticleService {
     @Autowired
     private lateinit var ossRepository: OSSRepository
 
-    @Autowired
-    private lateinit var druidDataSource: DruidDataSource
+    @PersistenceContext
+    private lateinit var entityManager: EntityManager
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -244,20 +248,37 @@ class ArticleService {
         }
     }
 
+//    fun getCategories(): List<Category> {
+//        val list = LinkedList<Category>()
+//        val sql = " select category, count(*) as size from Article where shown=1 group by category"
+//        val stmt = druidDataSource.connection.createStatement()
+//        val resultSet = stmt.executeQuery(sql)
+//        while (resultSet.next()) {
+//            val item = Category()
+//            item.category = resultSet.getString("category")
+//            item.size = resultSet.getInt("size").toLong()
+//            list.add(item)
+//        }
+//        logger.error(list.toString())
+//        stmt.connection.close()
+//        stmt.close()
+//        return list
+//    }
+
+    @Transactional
     fun getCategories(): List<Category> {
         val list = LinkedList<Category>()
         val sql = " select category, count(*) as size from Article where shown=1 group by category"
-        val stmt = druidDataSource.connection.createStatement()
-        val resultSet = stmt.executeQuery(sql)
-        while (resultSet.next()) {
-            val item = Category()
-            item.category = resultSet.getString("category")
-            item.size = resultSet.getInt("size").toLong()
-            list.add(item)
+        val session = entityManager.unwrap(Session::class.java)
+        val result: List<Array<Any>> = session.createNativeQuery(sql).resultList as List<Array<Any>>
+        result.forEach {
+            val category = Category()
+            category.category = it[0] as String
+            category.size = (it[1] as BigInteger).toLong()
+            list.add(category)
         }
-        logger.error(list.toString())
-        stmt.connection.close()
-        stmt.close()
+        session.close()
+        println(list.toString())
         return list
     }
 }

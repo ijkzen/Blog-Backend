@@ -45,6 +45,8 @@ dependencies {
     implementation("javax.mail:mail:1.5.0-b01")
     implementation("commons-codec:commons-codec:1.13")
     implementation("com.aliyun.oss:aliyun-sdk-oss:3.7.0")
+    implementation("org.apache.commons:commons-collections4:4.1")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

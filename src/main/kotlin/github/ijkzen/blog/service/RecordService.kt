@@ -1,16 +1,22 @@
 package github.ijkzen.blog.service
 
-import com.alibaba.druid.pool.DruidDataSource
 import github.ijkzen.blog.bean.record.CountBean
 import github.ijkzen.blog.bean.record.RequestRecord
 import github.ijkzen.blog.repository.RecordRepository
 import github.ijkzen.blog.utils.EMPTY
+import org.apache.commons.collections4.queue.CircularFifoQueue
+import org.hibernate.Session
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import ua_parser.Parser
+import java.math.BigInteger
 import java.util.*
 import java.util.regex.Pattern
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
 import javax.servlet.http.HttpServletRequest
+import javax.transaction.Transactional
 
 @Service
 class RecordService {
@@ -22,9 +28,15 @@ class RecordService {
     @Autowired
     private lateinit var recordRepository: RecordRepository
 
-    @Autowired
-    private lateinit var druidDataSource: DruidDataSource
+    @PersistenceContext
+    private lateinit var entityManager: EntityManager
 
+    private val logger = LoggerFactory.getLogger(javaClass)
+
+    private val solidQueue = CircularFifoQueue<RequestRecord>()
+
+    @Synchronized
+    @Transactional
     fun saveRecord(request: HttpServletRequest) {
         val parser = Parser()
         val client = parser.parse(request.getHeader(USER_AGENT))
@@ -40,7 +52,7 @@ class RecordService {
 
         val device = client.device.family
         val time = Date()
-        val ip = request.getHeader("X-Real-IP")
+        var ip = request.getHeader("X-Real-IP")
         val tmp = request.requestURL.toString()
             .replace("https://", "")
             .replace("http://", "")
@@ -49,20 +61,22 @@ class RecordService {
             tmp.indexOf("/")
         )
         val method = request.method
-        val record = RequestRecord(
-            operatingSystem = operatingSystem,
-            operatingSystemVersion = operatingSystemVersion,
-            browser = browser,
-            browserVersion = browserVersion,
-            device = device,
-            time = time,
-            ip = ip,
-            url = url,
-            httpMethod = method
-        )
 
-        if (isIP(record.ip)) {
-            recordRepository.save(record)
+        ip = "220.181.38.148"
+        if (ip != null && isIP(ip)) {
+            val record = RequestRecord(
+                operatingSystem = operatingSystem,
+                operatingSystemVersion = operatingSystemVersion,
+                browser = browser,
+                browserVersion = browserVersion,
+                device = device,
+                time = time,
+                ip = ip,
+                url = url,
+                httpMethod = method
+            )
+            batchInsertRecord()
+            solidQueue.add(record)
         }
     }
 
@@ -70,6 +84,7 @@ class RecordService {
         return recordRepository.findRequestRecordsByProvince(EMPTY)
     }
 
+    //todo frequency is too high
     fun save(requestRecord: RequestRecord) {
         recordRepository.save(requestRecord)
     }
@@ -81,16 +96,27 @@ class RecordService {
         return matcher.find() && ip != "127.0.0.1"
     }
 
+    @Transactional
     fun getPeopleCount(): CountBean {
         val sql = "select count(distinct RequestRecord.ip)  as peopleCount from RequestRecord"
-        val stmt = druidDataSource.connection.createStatement()
-        val resultSet = stmt.executeQuery(sql)
-        val result = CountBean()
-        while (resultSet.next()) {
-            result.count = resultSet.getLong("peopleCount")
+        val session = entityManager.unwrap(Session::class.java)
+        val result: List<BigInteger> = session.createNativeQuery(sql).resultList as List<BigInteger>
+        return CountBean().apply {
+            count = result[0].toLong()
         }
-        stmt.connection.close()
-        stmt.close()
-        return result
     }
+
+    @Transactional
+    fun batchInsertRecord() {
+        if (solidQueue.isAtFullCapacity) {
+            val session = entityManager.unwrap(Session::class.java)
+            logger.info("queue size: ${solidQueue.size}")
+            solidQueue.forEach {
+                logger.info("url: ${it.url}")
+                session.save("RequestRecord", it)
+            }
+            solidQueue.clear()
+        }
+    }
+
 }

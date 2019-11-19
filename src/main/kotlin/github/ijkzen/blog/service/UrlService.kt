@@ -1,30 +1,30 @@
 package github.ijkzen.blog.service
 
-import com.alibaba.druid.pool.DruidDataSource
 import github.ijkzen.blog.bean.category.Category
-import org.springframework.beans.factory.annotation.Autowired
+import org.hibernate.Session
 import org.springframework.stereotype.Service
+import java.math.BigInteger
 import java.util.*
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
 
 @Service
 class UrlService {
 
-    @Autowired
-    private lateinit var druidDataSource: DruidDataSource
+    @PersistenceContext
+    private lateinit var entityManager: EntityManager
 
     fun getUrlCount(): List<Category> {
         val list = LinkedList<Category>()
         val sql = "select RequestRecord.url, count(*) as size from RequestRecord group by url order by size desc"
-        val stmt = druidDataSource.connection.createStatement()
-        val resultSet = stmt.executeQuery(sql)
-        while (resultSet.next()) {
-            val item = Category()
-            item.category = resultSet.getString("url")
-            item.size = resultSet.getInt("size").toLong()
-            list.add(item)
+        val session = entityManager.unwrap(Session::class.java)
+        val results: List<Array<Any>> = session.createNativeQuery(sql).resultList as List<Array<Any>>
+        results.forEach {
+            val category = Category()
+            category.category = it[0] as String
+            category.size = (it[1] as BigInteger).toLong()
+            list.add(category)
         }
-        stmt.connection.close()
-        stmt.close()
         return list
     }
 }
