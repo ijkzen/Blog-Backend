@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface RecordRepository : JpaRepository<RequestRecord, Long> {
 
-    fun findRequestRecordsByProvince(province: String): List<RequestRecord>
+    fun findRequestRecordsByCountry(province: String): List<RequestRecord>
 }

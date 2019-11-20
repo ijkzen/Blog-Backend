@@ -5,12 +5,16 @@ import github.ijkzen.blog.bean.record.CountBean
 import github.ijkzen.blog.bean.record.RequestRecord
 import github.ijkzen.blog.repository.RecordRepository
 import github.ijkzen.blog.utils.EMPTY
+import org.hibernate.Session
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import ua_parser.Parser
 import java.util.*
 import java.util.regex.Pattern
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
 import javax.servlet.http.HttpServletRequest
+import javax.transaction.Transactional
 
 @Service
 class RecordService {
@@ -22,9 +26,13 @@ class RecordService {
     @Autowired
     private lateinit var recordRepository: RecordRepository
 
+    @PersistenceContext
+    private lateinit var entityManager: EntityManager
+
     @Autowired
     private lateinit var druidDataSource: DruidDataSource
 
+    @Transactional
     fun saveRecord(request: HttpServletRequest) {
         val parser = Parser()
         val client = parser.parse(request.getHeader(USER_AGENT))
@@ -40,7 +48,7 @@ class RecordService {
 
         val device = client.device.family
         val time = Date()
-        val ip = request.getHeader("X-Real-IP")
+        var ip = request.getHeader("X-Real-IP")
         val tmp = request.requestURL.toString()
             .replace("https://", "")
             .replace("http://", "")
@@ -61,17 +69,19 @@ class RecordService {
             httpMethod = method
         )
 
-        if (isIP(record.ip)) {
-            recordRepository.save(record)
+        if (ip != null && isIP(record.ip)) {
+            save(record)
         }
     }
 
     fun getReadyList(): List<RequestRecord> {
-        return recordRepository.findRequestRecordsByProvince(EMPTY)
+        return recordRepository.findRequestRecordsByCountry(EMPTY)
     }
 
+    @Transactional
     fun save(requestRecord: RequestRecord) {
-        recordRepository.save(requestRecord)
+        val session = entityManager.unwrap(Session::class.java)
+        session.save("RequestRecord", requestRecord)
     }
 
     private fun isIP(ip: String): Boolean {
