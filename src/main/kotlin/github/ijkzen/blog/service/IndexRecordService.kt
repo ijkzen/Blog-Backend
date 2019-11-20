@@ -27,6 +27,6 @@ class IndexRecordService {
 
     fun getViewCount(): Long {
         val record = indexRecordRepository.findById(1)
-        return record.get().count
+        return if (record.isPresent) record.get().count else 0
     }
 }
