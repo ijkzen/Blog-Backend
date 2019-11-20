@@ -35,15 +35,10 @@ data class RequestRecord(
         var url: String,
 
         @Column
-        var province: String = EMPTY,
+        var country: String? = EMPTY,
 
         @Column
-        var city: String = EMPTY,
-
-        var longitude: String = EMPTY,
-
-        @Column
-        var latitude: String = EMPTY,
+        var region: String? = EMPTY,
 
         @Column
         var httpMethod: String = EMPTY

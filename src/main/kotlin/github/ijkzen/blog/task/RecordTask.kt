@@ -1,14 +1,15 @@
 package github.ijkzen.blog.task
 
+import github.ijkzen.blog.bean.record.IPAddress
 import github.ijkzen.blog.service.RecordService
-import github.ijkzen.blog.utils.AMAP_KEY
-import org.codehaus.jackson.map.ObjectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Async
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
+import javax.transaction.Transactional
+
 
 @Component
 class RecordTask {
@@ -20,26 +21,31 @@ class RecordTask {
 
     private val restTemplate = RestTemplate()
 
+//    init {
+//        val messageConverters = ArrayList<HttpMessageConverter<*>>()
+//        val converter = MappingJackson2HttpMessageConverter()
+//
+//        converter.supportedMediaTypes = Collections.singletonList(MediaType.ALL)
+//        messageConverters.add(converter)
+//        restTemplate.messageConverters = messageConverters
+//    }
+
     @Suppress("UNCHECKED_CAST")
     @Async
     @Scheduled(fixedRate = 1000 * 60 * 60 * 12)
+    @Transactional
     fun completeRecord() {
         val list = recordService.getReadyList()
         list.forEach {
+            logger.info("ip: ${it.ip}")
             val json = restTemplate.getForObject(
-                "https://restapi.amap.com/v3/ip?ip=${it.ip}&key=$AMAP_KEY",
-                String::class.java
+                "http://ip-api.com/json/${it.ip}?lang=zh-CN",
+                IPAddress::class.java
             )
-            logger.info(json)
-            val map: Map<String, String> = ObjectMapper().readValue(json, Map::class.java) as Map<String, String>
-            it.province = map["province"] ?: ""
-            it.city = map["city"] ?: ""
-            it.longitude = (map["rectangle"] ?: "")
-                .split(";")[0]
-                .split(",")[0]
-            it.latitude = (map["rectangle"] ?: "")
-                .split(";")[0]
-                .split(",")[1]
+
+            Thread.sleep(50)
+            it.country = json!!.country
+            it.region = json.regionName
 
             recordService.save(it)
         }

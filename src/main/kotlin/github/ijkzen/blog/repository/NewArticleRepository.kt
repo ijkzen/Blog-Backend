@@ -1,6 +1,5 @@
 package github.ijkzen.blog.repository
 
-import com.sun.org.apache.bcel.internal.generic.NEWARRAY
 import github.ijkzen.blog.bean.articles.NewArticle
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
