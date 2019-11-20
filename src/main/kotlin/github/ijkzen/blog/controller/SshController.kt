@@ -50,7 +50,9 @@ class SshController {
         val authentication = getAuthentication()
         val master = developerService.searchMaster()
         return if (authentication!!.principal == master.nodeId) {
-            gitService.setSsh(ssh.bytes)
+            Thread {
+                gitService.setSsh(ssh.bytes)
+            }.start()
             BaseBean()
         } else {
             BaseBean("401", "权限不足")
