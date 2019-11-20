@@ -29,6 +29,9 @@ class GitService {
 
     val restTemplate = RestTemplate()
 
+    @Autowired
+    private lateinit var articleService: ArticleService
+
     companion object {
         private var git: Git? = null
             get() {
@@ -160,6 +163,7 @@ class GitService {
         }
 
         init()
+        articleService.completeAll()
     }
 
     private fun isAllowed() = File(".ssh/id_rsa").exists() && File(REPOSITORY_NAME).exists()

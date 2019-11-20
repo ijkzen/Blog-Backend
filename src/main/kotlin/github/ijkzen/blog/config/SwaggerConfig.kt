@@ -30,7 +30,7 @@ class SwaggerConfig {
     @Bean
     fun createSwagger(): Docket {
         return Docket(DocumentationType.SWAGGER_2)
-            .host(DOMAIN.replace("https://", ""))
+            .host(DOMAIN.replace("https://", "").replace("http://", ""))
             .apiInfo(createSwaggerInfo())
             .select()
             .apis(RequestHandlerSelectors.basePackage("github.ijkzen.blog.controller"))

@@ -64,7 +64,7 @@ class RecordService {
             browserVersion = browserVersion,
             device = device,
             time = time,
-            ip = ip,
+            ip = ip ?: "",
             url = url,
             httpMethod = method
         )
