@@ -1,6 +1,5 @@
 package github.ijkzen.blog.service
 
-import com.alibaba.druid.pool.DruidDataSource
 import github.ijkzen.blog.bean.record.CountBean
 import github.ijkzen.blog.bean.record.RequestRecord
 import github.ijkzen.blog.repository.RecordRepository
@@ -9,6 +8,7 @@ import org.hibernate.Session
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import ua_parser.Parser
+import java.math.BigInteger
 import java.util.*
 import java.util.regex.Pattern
 import javax.persistence.EntityManager
@@ -28,9 +28,6 @@ class RecordService {
 
     @PersistenceContext
     private lateinit var entityManager: EntityManager
-
-    @Autowired
-    private lateinit var druidDataSource: DruidDataSource
 
     @Transactional
     fun saveRecord(request: HttpServletRequest) {
@@ -91,16 +88,13 @@ class RecordService {
         return matcher.find() && ip != "127.0.0.1"
     }
 
+    @Transactional
     fun getPeopleCount(): CountBean {
         val sql = "select count(distinct RequestRecord.ip)  as peopleCount from RequestRecord"
-        val stmt = druidDataSource.connection.createStatement()
-        val resultSet = stmt.executeQuery(sql)
-        val result = CountBean()
-        while (resultSet.next()) {
-            result.count = resultSet.getLong("peopleCount")
+        val session = entityManager.unwrap(Session::class.java)
+        val result: List<BigInteger> = session.createNativeQuery(sql).resultList as List<BigInteger>
+        return CountBean().apply {
+            count = result[0].toLong()
         }
-        stmt.connection.close()
-        stmt.close()
-        return result
     }
 }

@@ -248,23 +248,6 @@ class ArticleService {
         }
     }
 
-//    fun getCategories(): List<Category> {
-//        val list = LinkedList<Category>()
-//        val sql = " select category, count(*) as size from Article where shown=1 group by category"
-//        val stmt = druidDataSource.connection.createStatement()
-//        val resultSet = stmt.executeQuery(sql)
-//        while (resultSet.next()) {
-//            val item = Category()
-//            item.category = resultSet.getString("category")
-//            item.size = resultSet.getInt("size").toLong()
-//            list.add(item)
-//        }
-//        logger.error(list.toString())
-//        stmt.connection.close()
-//        stmt.close()
-//        return list
-//    }
-
     @Transactional
     fun getCategories(): List<Category> {
         val list = LinkedList<Category>()
