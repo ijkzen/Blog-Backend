@@ -25,5 +25,5 @@ const val EMPTY = "empty"
 
 const val DES = "des"
 //todo
-const val DOMAIN = "http://localhost:8080"
-const val FRONT = "http://localhost:4200"
+const val DOMAIN = "https://api.ijkzen.tech"
+const val FRONT = "https://www.ijkzen.tech"
