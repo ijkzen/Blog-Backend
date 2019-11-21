@@ -32,42 +32,44 @@ class RecordService {
     @Transactional
     fun saveRecord(request: HttpServletRequest) {
         val parser = Parser()
-        val client = parser.parse(request.getHeader(USER_AGENT))
-        val operatingSystem = client.os.family
-        val operatingSystemVersion = client.os.major + "_" +
-                client.os.minor + "_" +
-                client.os.patch + "_" +
-                client.os.patchMinor
-        val browser = client.userAgent.family
-        val browserVersion = client.userAgent.major + "_" +
-                client.userAgent.minor + "_" +
-                client.userAgent.patch
+        if (!request.getHeader(USER_AGENT).isNullOrEmpty()) {
+            val client = parser.parse(request.getHeader(USER_AGENT))
+            val operatingSystem = client.os.family
+            val operatingSystemVersion = client.os.major + "_" +
+                    client.os.minor + "_" +
+                    client.os.patch + "_" +
+                    client.os.patchMinor
+            val browser = client.userAgent.family
+            val browserVersion = client.userAgent.major + "_" +
+                    client.userAgent.minor + "_" +
+                    client.userAgent.patch
 
-        val device = client.device.family
-        val time = Date()
-        var ip = request.getHeader("X-Real-IP")
-        val tmp = request.requestURL.toString()
-            .replace("https://", "")
-            .replace("http://", "")
+            val device = client.device.family
+            val time = Date()
+            var ip = request.getHeader("X-Real-IP")
+            val tmp = request.requestURL.toString()
+                .replace("https://", "")
+                .replace("http://", "")
 
-        val url = tmp.substring(
-            tmp.indexOf("/")
-        )
-        val method = request.method
-        val record = RequestRecord(
-            operatingSystem = operatingSystem,
-            operatingSystemVersion = operatingSystemVersion,
-            browser = browser,
-            browserVersion = browserVersion,
-            device = device,
-            time = time,
-            ip = ip ?: "",
-            url = url,
-            httpMethod = method
-        )
+            val url = tmp.substring(
+                tmp.indexOf("/")
+            )
+            val method = request.method
+            val record = RequestRecord(
+                operatingSystem = operatingSystem,
+                operatingSystemVersion = operatingSystemVersion,
+                browser = browser,
+                browserVersion = browserVersion,
+                device = device,
+                time = time,
+                ip = ip ?: "",
+                url = url,
+                httpMethod = method
+            )
 
-        if (ip != null && isIP(record.ip)) {
-            save(record)
+            if (ip != null && isIP(record.ip)) {
+                save(record)
+            }
         }
     }
 
