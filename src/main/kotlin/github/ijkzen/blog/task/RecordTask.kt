@@ -43,7 +43,7 @@ class RecordTask {
                 IPAddress::class.java
             )
 
-            Thread.sleep(50)
+            Thread.sleep(1500)
             it.country = json!!.country
             it.region = json.regionName
 
