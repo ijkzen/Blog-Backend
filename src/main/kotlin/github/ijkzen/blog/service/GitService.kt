@@ -81,7 +81,7 @@ class GitService {
 
     fun deleteRemoteRepository(): Boolean {
         val fullName = repositoryService.findArticleRepo().fullName
-        val token = developerService.searchMaster().token
+        val token = developerService.searchMaster().get().token
         val entity = HttpEntity("", getGithubHeaders(token!!))
         val result = restTemplate.exchange(
             "https://api.github.com/repos/$fullName",
@@ -99,7 +99,7 @@ class GitService {
     }
 
     fun commitAll(message: String) {
-        val developer = developerService.searchMaster()
+        val developer = developerService.searchMaster().get()
         if (isAllowed()) {
             git!!.commit()
                 .setAuthor(developer.developerName, developer.email)

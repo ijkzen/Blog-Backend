@@ -126,7 +126,7 @@ class ChatController {
     }
 
     private fun getChatMessagesList(): ChatMessagesBean {
-        val entity = HttpEntity<String>("", getJsonHeaders())
+        val entity = HttpEntity("", getJsonHeaders())
         val response = restTemplate.exchange(
                 "https://m.weibo.cn/msg/messages?uid=5175429989",
                 HttpMethod.GET,

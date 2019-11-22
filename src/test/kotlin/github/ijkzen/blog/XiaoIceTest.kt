@@ -26,7 +26,7 @@ class XiaoIceTest {
     private val headers = HttpHeaders()
 
     companion object {
-        var retryCount = 0;
+        var retryCount = 0
     }
 
     @Before
@@ -38,7 +38,7 @@ class XiaoIceTest {
     }
 
     fun getChatMessagesListSize(): Long {
-        val entity = HttpEntity<String>("", headers)
+        val entity = HttpEntity("", headers)
         val response = restTemplate.exchange(
                 "https://m.weibo.cn/msg/messages?uid=5175429989",
                 HttpMethod.GET,
@@ -108,7 +108,7 @@ class XiaoIceTest {
     }
 
     private fun getChatMessagesList(): ChatMessagesBean {
-        val entity = HttpEntity<String>("", headers)
+        val entity = HttpEntity("", headers)
         val response = restTemplate.exchange(
                 "https://m.weibo.cn/msg/messages?uid=5175429989",
                 HttpMethod.GET,

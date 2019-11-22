@@ -9,5 +9,4 @@ import org.springframework.stereotype.Repository
  * @Date 2019/10/30
  */
 @Repository
-interface IndexRecordRepository : JpaRepository<IndexRecord, Long> {
-}
+interface IndexRecordRepository : JpaRepository<IndexRecord, Long>

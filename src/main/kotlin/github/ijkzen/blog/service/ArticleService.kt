@@ -113,7 +113,7 @@ class ArticleService {
         var id: Long? = null
         var isDelete: Boolean? = false
         if (exist(fileName)) {
-            val originArticle = articleRepository.findByFileNameAndAndShownTrue(fileName)
+            val originArticle = articleRepository.findByFileNameAndShownTrue(fileName)
             visits = originArticle.visits ?: 0
             commentId = originArticle.commentId ?: 0
             isShow = originArticle.shown ?: true
@@ -150,13 +150,13 @@ class ArticleService {
     fun getAuthor(markdown: String): String {
         val meta = getMeta(markdown)
         return if (meta == null) {
-            developerService.searchMaster().developerName!!
+            developerService.searchMaster().get().developerName!!
         } else {
             val parts = meta.split("\n")
             var author: String?
             author = parts.find { it.contains("author") }?.replace("author:", "")?.trim()
             if (author == null) {
-                author = developerService.searchMaster().developerName!!
+                author = developerService.searchMaster().get().developerName!!
             }
             author
         }

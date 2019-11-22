@@ -5,7 +5,10 @@ import github.ijkzen.blog.bean.articles.Article
 import github.ijkzen.blog.bean.articles.NewArticle
 import github.ijkzen.blog.bean.articles.NewArticlesBean
 import github.ijkzen.blog.service.*
-import github.ijkzen.blog.utils.*
+import github.ijkzen.blog.utils.AUTHORIZATION
+import github.ijkzen.blog.utils.POST_DIR
+import github.ijkzen.blog.utils.getAuthentication
+import github.ijkzen.blog.utils.unAuthorized
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
@@ -107,7 +110,7 @@ class ArticleController {
     @DeleteMapping(value = ["/{id}"])
     fun deleteArticle(@PathVariable("id") id: Long): BaseBean {
         val authentication = getAuthentication()
-        val master = developerService.searchMaster()
+        val master = developerService.searchMaster().get()
         val result = BaseBean()
 
         return if (authentication!!.principal == master.nodeId) {
@@ -194,7 +197,7 @@ class ArticleController {
     @GetMapping("/apply/{newArticleId}")
     fun applyArticle(@PathVariable newArticleId: Long): BaseBean {
         val authentication = getAuthentication()
-        val master = developerService.searchMaster()
+        val master = developerService.searchMaster().get()
         return if (authentication!!.principal == master.nodeId) {
             val record = newArticleService.find(newArticleId)
             newArticleService.save(record.apply { processed = true })
@@ -245,7 +248,7 @@ class ArticleController {
     @GetMapping("/cancel/{newArticleId}")
     fun cancelArticle(@PathVariable newArticleId: Long): BaseBean {
         val authentication = getAuthentication()
-        val master = developerService.searchMaster()
+        val master = developerService.searchMaster().get()
         return if (authentication!!.principal == master.nodeId) {
             val newArticle = newArticleService.find(newArticleId)
             newArticleService.save(newArticle.apply { processed = true })
@@ -280,7 +283,7 @@ class ArticleController {
     @GetMapping("/edit/list")
     fun getEditArticleList(): NewArticlesBean {
         val authentication = getAuthentication()
-        val master = developerService.searchMaster()
+        val master = developerService.searchMaster().get()
         return if (authentication!!.principal == master.nodeId) {
             NewArticlesBean().apply { list = newArticleService.getEditList() }
         } else {

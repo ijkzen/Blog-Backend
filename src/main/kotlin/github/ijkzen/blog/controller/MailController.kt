@@ -65,7 +65,7 @@ class MailController {
     fun save(@RequestBody mail: MailConfigurationBean): BaseBean {
         val result = BaseBean()
         val authentication = getAuthentication()
-        val master = developerService.searchMaster()
+        val master = developerService.searchMaster().get()
         return if (authentication!!.principal == master.nodeId) {
             mailService.save(
                     mail.apply {

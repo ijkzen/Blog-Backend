@@ -24,7 +24,7 @@ class RepositoryService {
     }
 
     fun getRepositoryUrl(): String {
-        val developerName = developerService.searchMaster().developerName
+        val developerName = developerService.searchMaster().get().developerName
         val result = repository.findByFullName("$developerName/$REPOSITORY_NAME")
         return result?.htmlUrl ?: ""
     }

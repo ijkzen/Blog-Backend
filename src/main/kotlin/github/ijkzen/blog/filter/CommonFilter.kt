@@ -43,7 +43,7 @@ class CommonFilter(url: String, authenticationManager: AuthenticationManager, ht
 
     override fun unsuccessfulAuthentication(request: HttpServletRequest?, response: HttpServletResponse?, failed: AuthenticationException?) {
         System.err.println("认证失败")
-        SecurityContextHolder.clearContext();
+        SecurityContextHolder.clearContext()
         response!!.contentType = "application/json;charset=UTF-8"
         response.status = HttpServletResponse.SC_OK
         response.characterEncoding = "UTF-8"

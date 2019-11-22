@@ -48,7 +48,7 @@ class DonateController {
     fun receiveAliPay(alipay: MultipartFile): BaseBean {
         val result = BaseBean()
         val authorization = getAuthentication()
-        val master = developerService.searchMaster()
+        val master = developerService.searchMaster().get()
         if (authorization!!.principal == master.nodeId) {
             if (!alipay.isEmpty) {
                 donateService.receiveAliPay(alipay.bytes)
@@ -82,7 +82,7 @@ class DonateController {
     fun receiveWechat(wechat: MultipartFile): BaseBean {
         val result = BaseBean()
         val authorization = getAuthentication()
-        val master = developerService.searchMaster()
+        val master = developerService.searchMaster().get()
         if (authorization!!.principal == master.nodeId) {
             if (!wechat.isEmpty) {
                 donateService.receiveWechatPay(wechat.bytes)

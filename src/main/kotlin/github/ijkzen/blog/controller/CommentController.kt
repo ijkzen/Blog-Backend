@@ -78,7 +78,7 @@ class CommentController {
                 mailService.sendMail(receiver.email!!, "新回复", "快来博客 ${comment.articleUrl} 看看，你有新的回复了")
             }.start()
         }
-        val master = developerService.searchMaster()
+        val master = developerService.searchMaster().get()
         Thread {
             mailService.sendMail(master.email!!, "新回复", "快来博客 ${comment.articleUrl} 看看，你有新的回复了")
         }.start()
@@ -114,7 +114,7 @@ class CommentController {
         return if (authentication == null) {
             unAuthorized(result)
         } else {
-            val master = developerService.searchMaster()
+            val master = developerService.searchMaster().get()
             if (master.nodeId == authentication.principal) {
                 commentService.deleteComment(id)
                 result.apply {
@@ -144,7 +144,7 @@ class CommentController {
     fun reportComment(@PathVariable id: Long): BaseBean {
         val result = BaseBean()
         commentService.reportComment(id)
-        val master = developerService.searchMaster()
+        val master = developerService.searchMaster().get()
         mailService.sendMail(master.email!!, "举报评论", "有新的举报评论")
         return result
     }
@@ -171,7 +171,7 @@ class CommentController {
         return if (authentication == null) {
             unAuthorized(result) as CommentsBean
         } else {
-            val master = developerService.searchMaster()
+            val master = developerService.searchMaster().get()
             if (master.nodeId == authentication.principal) {
                 result.list = commentService.findReportComments()
                 result
@@ -216,7 +216,7 @@ class CommentController {
     @PostMapping("/batchDelete")
     fun batchDeleteComment(@RequestBody list: List<Long>): BaseBean {
         val authentication = getAuthentication()
-        val master = developerService.searchMaster()
+        val master = developerService.searchMaster().get()
         return if (authentication!!.principal == master.nodeId) {
             list.forEach {
                 commentService.deleteComment(it)
@@ -251,7 +251,7 @@ class CommentController {
     @PostMapping("/batchCancel")
     fun batchCancelReport(@RequestBody list: List<Long>): BaseBean {
         val authentication = getAuthentication()
-        val master = developerService.searchMaster()
+        val master = developerService.searchMaster().get()
         return if (authentication!!.principal == master.nodeId) {
             list.forEach {
                 commentService.cancelReport(it)

@@ -78,8 +78,8 @@ class DeveloperController {
     )
     @GetMapping("/master")
     fun checkMaster(): BaseBean {
-        val master = developerService.searchMaster();
-        val authentication = getAuthentication();
+        val master = developerService.searchMaster().get()
+        val authentication = getAuthentication()
         val result = BaseBean()
         return if (master.nodeId == authentication!!.principal) {
             result

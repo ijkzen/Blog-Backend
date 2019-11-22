@@ -48,7 +48,7 @@ class SshController {
     @ResponseBody
     fun newSsh(ssh: MultipartFile): BaseBean {
         val authentication = getAuthentication()
-        val master = developerService.searchMaster()
+        val master = developerService.searchMaster().get()
         return if (authentication!!.principal == master.nodeId) {
             Thread {
                 gitService.setSsh(ssh.bytes)

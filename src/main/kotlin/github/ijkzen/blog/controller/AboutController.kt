@@ -75,7 +75,7 @@ class AboutController {
     @PostMapping("/me")
     fun setAbout(@RequestBody about: AboutBean): BaseBean {
         val authentication = getAuthentication()
-        val master = developerService.searchMaster()
+        val master = developerService.searchMaster().get()
         return if (authentication!!.principal == master.nodeId) {
             File(ABOUT_MD).writeText(about.about!!)
             gitService.completeAll("update about.md")

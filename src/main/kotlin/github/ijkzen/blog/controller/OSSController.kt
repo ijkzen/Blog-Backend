@@ -62,7 +62,7 @@ class OSSController {
     @PostMapping("/set")
     fun setOSS(@RequestBody newOSS: OSS): BaseBean {
         val authentication = getAuthentication()
-        val master = developerService.searchMaster()
+        val master = developerService.searchMaster().get()
         return if (authentication!!.principal == master.nodeId) {
             ossRepository.deleteUseless()
             newOSS.id = null

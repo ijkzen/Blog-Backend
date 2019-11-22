@@ -143,19 +143,6 @@ class OAuthController {
         ).body!!
     }
 
-    fun getMasterId(): Long {
-        val master = developerService.searchMaster().get()
-        val entity = HttpEntity("", getGithubHeaders(master.token!!))
-        val result = restTemplate.exchange(
-            "https://api.github.com/user",
-            HttpMethod.GET,
-            entity,
-            DeveloperBean::class.java
-        )
-
-        return result.body!!.developerId!!
-    }
-
     fun setWebHook() {
         if (!webHookExists()) {
             val master = developerService.searchMaster().get()
