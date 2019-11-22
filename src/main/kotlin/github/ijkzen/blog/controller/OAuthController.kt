@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
-import java.io.File
 import javax.servlet.http.HttpServletResponse
 
 @Api(value = "授权接口", description = "授权接口", tags = ["Github授权"])
@@ -106,7 +105,7 @@ class OAuthController {
         if (isExistRepository()) {
             val repos = getRepos()
             val repo = repos.find { it.name == REPOSITORY_NAME }!!
-            File(REPOSITORY_ID).writeText(repo.id!!.toString())
+            repo.state = MASTER
             repositoryService.updateArticleRepository(repo)
         } else {
             val developer = developerService.searchMaster().get()
@@ -117,8 +116,8 @@ class OAuthController {
                 entity,
                 RepositoryBean::class.java
             )
+            repositoryBean!!.state = MASTER
             repositoryService.updateArticleRepository(repositoryBean!!)
-            File(REPOSITORY_ID).writeText(repositoryBean.id!!.toString())
         }
         setWebHook()
     }

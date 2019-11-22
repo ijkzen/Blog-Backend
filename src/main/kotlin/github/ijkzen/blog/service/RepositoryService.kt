@@ -2,11 +2,10 @@ package github.ijkzen.blog.service
 
 import github.ijkzen.blog.bean.github.response.RepositoryBean
 import github.ijkzen.blog.repository.Repository
-import github.ijkzen.blog.utils.REPOSITORY_ID
+import github.ijkzen.blog.utils.MASTER
 import github.ijkzen.blog.utils.REPOSITORY_NAME
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.io.File
 import javax.transaction.Transactional
 
 @Transactional
@@ -39,6 +38,6 @@ class RepositoryService {
     fun findAllRepos(): Array<RepositoryBean> = repository.findAll().toTypedArray()
 
     fun findArticleRepo(): RepositoryBean {
-        return repository.findById(File(REPOSITORY_ID).readText().toLong()).get()
+        return repository.findByState(MASTER).get()
     }
 }

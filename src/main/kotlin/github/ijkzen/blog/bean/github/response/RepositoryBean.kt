@@ -1,5 +1,6 @@
 package github.ijkzen.blog.bean.github.response
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -62,5 +63,9 @@ data class RepositoryBean(
 
         @Column
         @JsonProperty("updated_at")
-        var updatedTime: String?
+        var updatedTime: String?,
+
+        @Column
+        @JsonIgnore
+        var state: String?
 )
