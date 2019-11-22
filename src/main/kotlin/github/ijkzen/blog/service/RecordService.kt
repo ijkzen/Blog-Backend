@@ -5,6 +5,7 @@ import github.ijkzen.blog.bean.record.RequestRecord
 import github.ijkzen.blog.repository.RecordRepository
 import github.ijkzen.blog.utils.EMPTY
 import org.hibernate.Session
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import ua_parser.Parser
@@ -29,6 +30,8 @@ class RecordService {
     @PersistenceContext
     private lateinit var entityManager: EntityManager
 
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     @Transactional
     fun saveRecord(request: HttpServletRequest) {
         val parser = Parser()
@@ -46,6 +49,9 @@ class RecordService {
 
             val device = client.device.family
             val time = Date()
+            logger.run {
+                info("record time: $time")
+            }
             val ip = request.getHeader("X-Real-IP")
             val tmp = request.requestURL.toString()
                 .replace("https://", "")
