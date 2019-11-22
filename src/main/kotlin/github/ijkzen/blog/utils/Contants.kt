@@ -1,6 +1,6 @@
 package github.ijkzen.blog.utils
 
-const val MASTER_ID = "MASTER_ID"
+const val MASTER = "MASTER"
 const val REPOSITORY_ID = "REPOSITORY_ID"
 const val IS_FIRST = "IS_FIRST"
 

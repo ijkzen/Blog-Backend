@@ -90,7 +90,7 @@ class OAuthController {
         val developer = result.body!!
         developer.token = token
         if (isFirst!!) {
-            File(MASTER_ID).writeText(developer.developerId.toString())
+            developer.state = MASTER
         }
         if (developer.email.isNullOrEmpty()) {
             getDeveloperEmail(developer)

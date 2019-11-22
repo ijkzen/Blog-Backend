@@ -11,4 +11,6 @@ interface DeveloperRepository : JpaRepository<DeveloperBean, Long> {
     fun findDeveloperBeanByNodeId(nodeId: String): DeveloperBean?
 
     fun findDeveloperBeanByDeveloperName(name: String): DeveloperBean?
+
+    fun findDeveloperBeanByState(state: String): DeveloperBean?
 }
