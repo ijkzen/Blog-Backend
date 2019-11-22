@@ -5,6 +5,7 @@ import github.ijkzen.blog.repository.DeveloperRepository
 import github.ijkzen.blog.utils.MASTER
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class DeveloperService {
@@ -16,8 +17,12 @@ class DeveloperService {
         repository.save(developerBean)
     }
 
-    fun searchMaster(): DeveloperBean {
-        return repository.findDeveloperBeanByState(MASTER)!!
+    fun searchMaster(): Optional<DeveloperBean> {
+        return repository.findDeveloperBeanByState(MASTER)
+    }
+
+    fun masterExists(): Boolean {
+        return searchMaster().isPresent
     }
 
     fun searchDeveloperByNodeId(nodeId: String): DeveloperBean? {

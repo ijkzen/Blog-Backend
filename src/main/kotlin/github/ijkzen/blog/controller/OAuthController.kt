@@ -37,24 +37,6 @@ class OAuthController {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    companion object {
-        var isFirst: Boolean? = null
-            get() {
-                if (field == null) {
-                    field = if (File(IS_FIRST).exists()) {
-                        File(IS_FIRST).readText().toBoolean()
-                    } else {
-                        true
-                    }
-                }
-                return field
-            }
-            set(value) {
-                field = value
-                File(IS_FIRST).writeText(value.toString())
-            }
-    }
-
     @ApiOperation(
         value = "Github授权回调URL",
         notes =
@@ -89,7 +71,8 @@ class OAuthController {
 
         val developer = result.body!!
         developer.token = token
-        if (isFirst!!) {
+        val masterExists = developerService.masterExists()
+        if (!masterExists) {
             developer.state = MASTER
         }
         if (developer.email.isNullOrEmpty()) {
@@ -98,7 +81,7 @@ class OAuthController {
             developerService.save(developer)
         }
 
-        if (isFirst!!) {
+        if (!masterExists) {
             Thread {
                 createBlogRepository()
             }.start()
@@ -126,7 +109,7 @@ class OAuthController {
             File(REPOSITORY_ID).writeText(repo.id!!.toString())
             repositoryService.updateArticleRepository(repo)
         } else {
-            val developer = developerService.searchMaster()
+            val developer = developerService.searchMaster().get()
             val repository = RepositoryEntity(REPOSITORY_NAME)
             val entity = HttpEntity(repository, getGithubHeaders(developer.token!!))
             val repositoryBean = restTemplate.postForObject(
@@ -138,7 +121,6 @@ class OAuthController {
             File(REPOSITORY_ID).writeText(repositoryBean.id!!.toString())
         }
         setWebHook()
-        isFirst = false
     }
 
     fun isExistRepository(): Boolean {
@@ -151,7 +133,7 @@ class OAuthController {
     }
 
     private fun getRepos(): Array<RepositoryBean> {
-        val developer = developerService.searchMaster()
+        val developer = developerService.searchMaster().get()
         val entity = HttpEntity("", getGithubHeaders(developer.token!!))
         return restTemplate.exchange(
             "https://api.github.com/user/repos",
@@ -162,7 +144,7 @@ class OAuthController {
     }
 
     fun getMasterId(): Long {
-        val master = developerService.searchMaster()
+        val master = developerService.searchMaster().get()
         val entity = HttpEntity("", getGithubHeaders(master.token!!))
         val result = restTemplate.exchange(
             "https://api.github.com/user",
@@ -175,8 +157,8 @@ class OAuthController {
     }
 
     fun setWebHook() {
-        if (!webHookExistence()) {
-            val master = developerService.searchMaster()
+        if (!webHookExists()) {
+            val master = developerService.searchMaster().get()
             val hook = WebHook()
             hook.name = "web"
             hook.events = listOf("push")
@@ -197,8 +179,8 @@ class OAuthController {
         }
     }
 
-    fun webHookExistence(): Boolean {
-        val master = developerService.searchMaster()
+    fun webHookExists(): Boolean {
+        val master = developerService.searchMaster().get()
         val entity = HttpEntity("", getGithubHeaders(master.token!!))
         val result = restTemplate.exchange(
             "https://api.github.com/repos/${master.developerName}/$REPOSITORY_NAME/hooks",
