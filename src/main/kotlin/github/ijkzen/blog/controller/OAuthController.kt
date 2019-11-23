@@ -73,6 +73,11 @@ class OAuthController {
         val masterExists = developerService.masterExists()
         if (!masterExists) {
             developer.state = MASTER
+        } else {
+            val master = developerService.searchMaster()
+            if (developer.nodeId == master.get().nodeId) {
+                developer.state = MASTER
+            }
         }
         if (developer.email.isNullOrEmpty()) {
             getDeveloperEmail(developer)
