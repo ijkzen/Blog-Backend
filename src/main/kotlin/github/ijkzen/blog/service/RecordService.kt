@@ -107,6 +107,6 @@ class RecordService {
     }
 
     fun getRecordByIp(ip: String): Optional<RequestRecord> {
-        return recordRepository.findFirstByIpOrderByTime(ip)
+        return recordRepository.findFirstByIpAndCountryNotContaining(ip)
     }
 }
