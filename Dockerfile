@@ -12,6 +12,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update -y && apt install tzdata -y && echo "Asia/Shanghai" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
 
 COPY --from=builder /home/gradle/src/build/libs/IJKZEN-BLOG-0.0.1-SNAPSHOT.jar /app/app.jar
+WORKDIR /app
 EXPOSE 8080
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/app.jar"]
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","app.jar"]
 
