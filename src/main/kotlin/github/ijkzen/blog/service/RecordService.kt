@@ -96,6 +96,7 @@ class RecordService {
         return matcher.find() && ip != "127.0.0.1"
     }
 
+    @Suppress("UNCHECKED_CAST")
     @Transactional
     fun getPeopleCount(): CountBean {
         val sql = "select count(distinct RequestRecord.ip)  as peopleCount from RequestRecord"

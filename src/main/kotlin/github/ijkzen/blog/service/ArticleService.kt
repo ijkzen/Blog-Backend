@@ -248,6 +248,7 @@ class ArticleService {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     @Transactional
     fun getCategories(): List<Category> {
         val list = LinkedList<Category>()

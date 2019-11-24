@@ -14,6 +14,7 @@ class UrlService {
     @PersistenceContext
     private lateinit var entityManager: EntityManager
 
+    @Suppress("UNCHECKED_CAST")
     fun getUrlCount(): List<Category> {
         val list = LinkedList<Category>()
         val sql = "select RequestRecord.url, count(*) as size from RequestRecord group by url order by size desc"
