@@ -105,4 +105,8 @@ class RecordService {
             count = result[0].toLong()
         }
     }
+
+    fun getRecordByIp(ip: String): Optional<RequestRecord> {
+        return recordRepository.findFirstByIpOrderByTime(ip)
+    }
 }
