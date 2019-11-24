@@ -204,10 +204,14 @@ class ArticleController {
             val originArticle = articleService.getArticle(record.origin!!).get()
             val changedArticle = articleService.getArticle(record.latest!!).get()
             originArticle.content = changedArticle.content
+
             if (originArticle.contributors == null) {
-                originArticle.contributors = record.developerName
+                originArticle.contributors =
+                    if (master.developerName == record.developerName) null else record.developerName
             } else {
-                originArticle.contributors += "${record.developerName},"
+                if (master.developerName != record.developerName) {
+                    originArticle.contributors += "${record.developerName},"
+                }
             }
             articleService.save(originArticle)
 
