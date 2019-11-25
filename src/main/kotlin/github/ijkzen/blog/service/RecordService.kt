@@ -80,7 +80,7 @@ class RecordService {
     }
 
     fun getReadyList(): List<RequestRecord> {
-        return recordRepository.findRequestRecordsByCountry(EMPTY)
+        return recordRepository.findRequestRecordsByCity(EMPTY)
     }
 
     @Transactional
@@ -108,6 +108,6 @@ class RecordService {
     }
 
     fun getRecordByIp(ip: String): Optional<RequestRecord> {
-        return recordRepository.findFirstByIpAndCountryNotContaining(ip)
+        return recordRepository.findFirstByIpAndCityNotContaining(ip)
     }
 }

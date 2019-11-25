@@ -9,7 +9,7 @@ import java.util.*
 @Repository
 interface RecordRepository : JpaRepository<RequestRecord, Long> {
 
-    fun findRequestRecordsByCountry(country: String): List<RequestRecord>
+    fun findRequestRecordsByCity(country: String): List<RequestRecord>
 
-    fun findFirstByIpAndCountryNotContaining(ip: String, country: String = EMPTY): Optional<RequestRecord>
+    fun findFirstByIpAndCityNotContaining(ip: String, city: String = EMPTY): Optional<RequestRecord>
 }
