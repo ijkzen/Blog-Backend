@@ -51,7 +51,7 @@ class RecordTask {
                 it.city = origin.city
             } else {
                 val json = restTemplate.getForObject(
-                    "http://ip.taobao.com//service/getIpInfo.php?ip=${it.ip}",
+                    "http://ip.taobao.com/service/getIpInfo.php?ip=${it.ip}",
                     IPTaoBao::class.java
                 )
 
