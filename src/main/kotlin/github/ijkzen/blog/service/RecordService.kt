@@ -49,9 +49,6 @@ class RecordService {
 
             val device = client.device.family
             val time = Date()
-            logger.run {
-                info("record time: $time")
-            }
             val ip = request.getHeader("X-Real-IP")
             val tmp = request.requestURL.toString()
                 .replace("https://", "")

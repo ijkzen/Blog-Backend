@@ -37,12 +37,10 @@ class CommonFilter(url: String, authenticationManager: AuthenticationManager, ht
 
     override fun successfulAuthentication(request: HttpServletRequest?, response: HttpServletResponse?, chain: FilterChain?, authResult: Authentication?) {
         setAuthentication(authResult!!)
-        System.err.println("认证成功")
         chain!!.doFilter(request, response)
     }
 
     override fun unsuccessfulAuthentication(request: HttpServletRequest?, response: HttpServletResponse?, failed: AuthenticationException?) {
-        System.err.println("认证失败")
         SecurityContextHolder.clearContext()
         response!!.contentType = "application/json;charset=UTF-8"
         response.status = HttpServletResponse.SC_OK
