@@ -1,6 +1,6 @@
 package github.ijkzen.blog.task
 
-import github.ijkzen.blog.bean.record.IPTaoBao
+import github.ijkzen.blog.bean.record.IPAddress
 import github.ijkzen.blog.service.RecordService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -51,14 +51,14 @@ class RecordTask {
                 it.city = origin.city
             } else {
                 val json = restTemplate.getForObject(
-                    "http://ip.taobao.com/service/getIpInfo.php?ip=${it.ip}",
-                    IPTaoBao::class.java
+                    "http://ip-api.com/json/${it.ip}?lang=zh-CN",
+                    IPAddress::class.java
                 )
 
                 Thread.sleep(5000)
-                it.country = json!!.data.country
-                it.region = json.data.region
-                it.city = json.data.city
+                it.country = json!!.country
+                it.region = json.region
+                it.city = json.city
             }
 
             recordService.save(it)
