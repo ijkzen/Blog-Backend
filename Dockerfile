@@ -8,8 +8,6 @@ FROM  adoptopenjdk/openjdk8-openj9
 # set timezone
 ARG TIME_ZONE=Asia/Shanghai
 ENV TZ=${TIME_ZONE}
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update -y && apt install tzdata -y && echo "Asia/Shanghai" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
 
 COPY --from=builder /home/gradle/src/build/libs/IJKZEN-BLOG-0.0.1-SNAPSHOT.jar /app/app.jar
 WORKDIR /app
