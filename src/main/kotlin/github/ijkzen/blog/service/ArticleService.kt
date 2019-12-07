@@ -212,8 +212,8 @@ class ArticleService {
             list
         }
     }
-
-    //    ![数组图解](../assets/images/2019/09/17/strassen_first.jpg)
+//        ![       ](../assets/images/2019/09/04/stock-pic.png)
+//    ![数组图解](../assets/images/2019/09/17/strassen_first.jpg)
     fun replaceUrl(markdown: String): String {
         var tmp = markdown
         val regex = "!\\[.*?]\\(\\.\\./assets/images.*?\\)"
@@ -271,7 +271,7 @@ class ArticleService {
         val list = ossRepository.findAll()
         var result = ""
         list.forEach {
-            result = content.replace(it.cdnDomain!!, "../assets/")
+            result = content.replace(it.cdnDomain!!, "../assets")
         }
         return result
     }
