@@ -213,7 +213,7 @@ class ArticleService {
         }
     }
 
-    //    ![数组图解](/assets/images/2019/09/17/strassen_first.jpg)
+    //    ![数组图解](../assets/images/2019/09/17/strassen_first.jpg)
     fun replaceUrl(markdown: String): String {
         var tmp = markdown
         val regex = "!\\[.*?]\\(\\.\\./assets/images.*?\\)"
@@ -264,5 +264,15 @@ class ArticleService {
         session.close()
         println(list.toString())
         return list
+    }
+
+    //  https://cdn.nextto.top/images/2019/09/04/stock-pic.png
+    fun replaceOssUrl2RelativeUrl(content: String): String {
+        val list = ossRepository.findAll()
+        var result = ""
+        list.forEach {
+            result = content.replace(it.cdnDomain!!, "../assets/")
+        }
+        return result
     }
 }

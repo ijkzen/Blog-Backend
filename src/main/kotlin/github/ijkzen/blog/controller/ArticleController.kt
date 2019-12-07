@@ -215,7 +215,7 @@ class ArticleController {
             }
             articleService.save(originArticle)
 
-            File("$POST_DIR/${record.fileName}").writeText(originArticle.content!!)
+            File("$POST_DIR/${record.fileName}").writeText(articleService.replaceOssUrl2RelativeUrl(originArticle.content!!))
             Thread {
                 gitService.completeAll("update article: ${record.articleName}")
                 val developer = developerService.searchDeveloperByName(record.developerName!!)
