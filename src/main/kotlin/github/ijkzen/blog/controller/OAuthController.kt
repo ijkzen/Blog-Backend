@@ -79,6 +79,8 @@ class OAuthController {
                 developer.state = MASTER
             }
         }
+
+        developer.bio = developer.avatarUrl
         developer.avatarUrl = """$DOMAIN/developer/avatar/${developer.developerId}"""
 
         if (developer.email.isNullOrEmpty()) {

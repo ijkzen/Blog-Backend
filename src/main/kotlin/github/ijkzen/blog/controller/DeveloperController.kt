@@ -99,6 +99,6 @@ class DeveloperController {
     @GetMapping("/avatar/{id}", produces = [MediaType.IMAGE_JPEG_VALUE])
     fun getAvatar(@PathVariable("id") id: Long): ByteArray {
         val developer = developerService.searchDeveloperById(id)
-        return URL(developer.avatarUrl).readBytes()
+        return URL(developer.bio).readBytes()
     }
 }
