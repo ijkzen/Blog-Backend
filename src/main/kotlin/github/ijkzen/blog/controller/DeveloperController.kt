@@ -11,9 +11,9 @@ import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.*
+import java.net.URL
 
 /**
  * @Author ijkzen
@@ -89,5 +89,16 @@ class DeveloperController {
                 errMessage = "当前用户不是站长"
             }
         }
+    }
+
+    @ApiOperation(
+        value = "get developer avatar by id",
+        notes = "return error jpg if id not exists"
+    )
+    @ResponseBody
+    @GetMapping("/avatar/{id}", produces = [MediaType.IMAGE_JPEG_VALUE])
+    fun getAvatar(@PathVariable("id") id: Long): ByteArray {
+        val developer = developerService.searchDeveloperById(id)
+        return URL(developer.avatarUrl).readBytes()
     }
 }
