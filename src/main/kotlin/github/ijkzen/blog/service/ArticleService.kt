@@ -55,8 +55,7 @@ class ArticleService {
     fun completeAll() {
         val list = ossRepository.findByInUseIsTrue()
         logger.info("oss size: ${list?.size}")
-        if (list == null || list.isEmpty()) {
-        } else {
+        if (list != null && list.isNotEmpty()) {
             oss = list[0]
             if (oss!!.category == "aliyun") {
                 aliyunOSS.uploadAllImages()
@@ -68,7 +67,18 @@ class ArticleService {
     }
 
     private fun storeArticles() {
-        File(POST_DIR).listFiles()?.forEach {
+        val files = File(POST_DIR).listFiles()!!
+        Collections.sort(files.asList(), object : Comparator<File> {
+            override fun compare(p0: File?, p1: File?): Int {
+                if (p0!!.isFile && p1!!.isFile) {
+                    return p0.name.compareTo(p1.name)
+                } else {
+                    throw FileSystemException(p0, p1, "当前文件为文件夹")
+                }
+            }
+
+        })
+        files.forEach {
             parseMd2Object(it)
             logger.info("File ${it.name} complete")
         }
