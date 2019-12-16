@@ -19,9 +19,9 @@ interface ArticleRepository : JpaRepository<Article, Long> {
 
     fun findArticlesByShownTrueAndCategoryContainingOrderByCreatedTimeDesc(category: String): List<Article>
 
-    fun findByShownTrueAndDeletedFalseOrderByCreatedTimeDesc(): List<Article>
+    fun findByShownTrueAndDeletedFalseOrderByIdDesc(): List<Article>
 
-    fun findByShownTrueAndDeletedFalseOrderByCreatedTimeAsc(): List<Article>
+    fun findByShownTrueAndDeletedFalseOrderByIdAsc(): List<Article>
 
     fun findByTitleContainingOrContentContainingOrderByCreatedTimeDesc(keywords: String, contents: String): List<Article>
 

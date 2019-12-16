@@ -93,11 +93,11 @@ class ArticleService {
     }
 
     fun getArticlesDesc(): List<Article> {
-        return articleRepository.findByShownTrueAndDeletedFalseOrderByCreatedTimeDesc()
+        return articleRepository.findByShownTrueAndDeletedFalseOrderByIdDesc()
     }
 
     fun getArticlesAsc(): List<Article> {
-        return articleRepository.findByShownTrueAndDeletedFalseOrderByCreatedTimeAsc()
+        return articleRepository.findByShownTrueAndDeletedFalseOrderByIdAsc()
     }
 
     fun getArticlesByKeywords(keywords: String): List<Article> {
