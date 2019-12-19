@@ -152,7 +152,7 @@ class ArticlesController {
         value = "更新数据库文章",
         notes =
         """
-                拉去仓库修改，同步到数据库    
+                拉取仓库修改，同步到数据库    
             """
     )
     @PostMapping(value = ["/update"])

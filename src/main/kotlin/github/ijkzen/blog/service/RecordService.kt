@@ -1,6 +1,8 @@
 package github.ijkzen.blog.service
 
 import github.ijkzen.blog.bean.record.CountBean
+import github.ijkzen.blog.bean.record.IPCountBean
+import github.ijkzen.blog.bean.record.IPCountsBean
 import github.ijkzen.blog.bean.record.RequestRecord
 import github.ijkzen.blog.repository.RecordRepository
 import github.ijkzen.blog.utils.EMPTY
@@ -102,6 +104,25 @@ class RecordService {
         return CountBean().apply {
             count = result[0].toLong()
         }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @Transactional
+    fun getIpCount(): IPCountsBean {
+        val sql =
+            "select country, region, city, count(*) as size from RequestRecord where country!='empty' group by country, region, city order by size desc;";
+        val session = entityManager.unwrap(Session::class.java)
+        val result: List<Array<Any>> = session.createNativeQuery(sql).resultList as List<Array<Any>>
+        val list = LinkedList<IPCountBean>()
+        result.forEach {
+            val item = IPCountBean()
+            item.country = it[0] as String
+            item.region = it[1] as String
+            item.city = it[2] as String
+            item.size = (it[3] as BigInteger).toLong()
+            list.add(item)
+        }
+        return IPCountsBean(list)
     }
 
     fun getRecordByIp(ip: String): Optional<RequestRecord> {

@@ -2,6 +2,7 @@ package github.ijkzen.blog.controller
 
 import github.ijkzen.blog.bean.BaseBean
 import github.ijkzen.blog.bean.record.CountBean
+import github.ijkzen.blog.bean.record.IPCountsBean
 import github.ijkzen.blog.service.IndexRecordService
 import github.ijkzen.blog.service.RecordService
 import io.swagger.annotations.Api
@@ -63,5 +64,13 @@ class IndexController {
     @GetMapping("/people")
     fun peopleCount(): CountBean {
         return recordService.getPeopleCount()
+    }
+
+    @ApiOperation(
+        value = "获取网站访问的ip信息"
+    )
+    @GetMapping("/record")
+    fun ipCount(): IPCountsBean {
+        return recordService.getIpCount()
     }
 }
