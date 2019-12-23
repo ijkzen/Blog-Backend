@@ -110,7 +110,7 @@ class RecordService {
     @Transactional
     fun getIpCount(): IPCountsBean {
         val sql =
-            "select country, region, city, count(*) as size from RequestRecord where country!='empty' group by country, region, city order by size desc;";
+            "select country, region, city, count(*) as size from RequestRecord where country!='empty' group by country, region, city order by size desc limit 100";
         val session = entityManager.unwrap(Session::class.java)
         val result: List<Array<Any>> = session.createNativeQuery(sql).resultList as List<Array<Any>>
         val list = LinkedList<IPCountBean>()
