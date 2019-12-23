@@ -72,7 +72,7 @@ class RecordService {
                 httpMethod = method
             )
 
-            if (ip != null && isIP(record.ip)) {
+            if (ip != null && isIP(record.ip) && url != "/") {
                 save(record)
             }
         }
