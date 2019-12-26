@@ -17,7 +17,8 @@ class UrlService {
     @Suppress("UNCHECKED_CAST")
     fun getUrlCount(): List<Category> {
         val list = LinkedList<Category>()
-        val sql = "select RequestRecord.url, count(*) as size from RequestRecord group by url order by size desc"
+        val sql =
+            "select RequestRecord.url, count(*) as size from RequestRecord group by url order by size desc limit 100"
         val session = entityManager.unwrap(Session::class.java)
         val results: List<Array<Any>> = session.createNativeQuery(sql).resultList as List<Array<Any>>
         results.forEach {
