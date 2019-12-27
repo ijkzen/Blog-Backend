@@ -222,7 +222,8 @@ class ArticleService {
             list
         }
     }
-//        ![       ](../assets/images/2019/09/04/stock-pic.png)
+
+    //        ![       ](../assets/images/2019/09/04/stock-pic.png)
 //    ![数组图解](../assets/images/2019/09/17/strassen_first.jpg)
     fun replaceUrl(markdown: String): String {
         var tmp = markdown
@@ -276,6 +277,17 @@ class ArticleService {
         return list
     }
 
+    fun getArticleMaxId(): Long? {
+        val sql = "select id from Article order by id desc limit 1"
+        val session = entityManager.unwrap(Session::class.java)
+        val result: List<Any?> = session.createNativeQuery(sql).resultList as List<Any?>
+        return if (result.isEmpty()) {
+            null
+        } else {
+            (result[0] as BigInteger).toLong()
+        }
+    }
+
     //  https://cdn.nextto.top/images/2019/09/04/stock-pic.png
     fun replaceOssUrl2RelativeUrl(content: String): String {
         val list = ossRepository.findAll()
@@ -285,4 +297,38 @@ class ArticleService {
         }
         return result
     }
+
+    fun getPreviousArticle(current: Long): Article? {
+        return getPrevious(current)
+    }
+
+    private fun getPrevious(current: Long): Article? {
+        if (current == 1.toLong()) {
+            return null
+        }
+        val article = articleRepository.findById(current - 1).get()
+        return if (article.shown!! && !article.deleted!!) {
+            article
+        } else {
+            getPrevious(current - 1)
+        }
+    }
+
+    fun getNextArticle(current: Long): Article? {
+        val max = getArticleMaxId()
+        return getNext(current, max)
+    }
+
+    fun getNext(current: Long, max: Long?): Article? {
+        if (null == max || max <= current) {
+            return null
+        }
+        val article = articleRepository.findById(current + 1).get()
+        return if (article.shown!! && !article.deleted!!) {
+            article
+        } else {
+            getNext(current + 1, max)
+        }
+    }
+
 }

@@ -174,7 +174,7 @@ class ArticlesController {
         name = "id",
         value = "文章Id",
         required = true,
-        paramType = "body"
+        paramType = "path"
     )
     @GetMapping(value = ["/view/{id}"])
     fun viewArticle(@PathVariable id: Long): BaseBean {
@@ -209,5 +209,41 @@ class ArticlesController {
     fun getFullArticles(): ArticlesBean {
         val list = articleService.getArticlesDesc()
         return ArticlesBean(list, list.size.toLong())
+    }
+
+    @ApiOperation(
+        value = "根据Id获取前一篇文章",
+        notes = """
+            如果是第一篇文章则返回null；
+            如果前一篇文章被标记为不显示或者删除，则会向左继续选择，直至得到正确的文章；
+        """
+    )
+    @ApiImplicitParam(
+        name = "current",
+        value = "当前文章Id",
+        required = true,
+        paramType = "path"
+    )
+    @GetMapping("/previous/{current}")
+    fun getPreviousArticle(@PathVariable("current") current: Long): ArticleBean {
+        return ArticleBean(articleService.getPreviousArticle(current))
+    }
+
+    @ApiOperation(
+        value = "根据Id获取后一篇文章",
+        notes = """
+            如果是最后一篇文章则返回null；
+            如果后一篇文章被标记为不显示或者删除，则会向右继续选择，直至得到正确的文章；
+        """
+    )
+    @ApiImplicitParam(
+        name = "current",
+        value = "当前文章Id",
+        required = true,
+        paramType = "path"
+    )
+    @GetMapping("/next/{current}")
+    fun getNextArticle(@PathVariable("current") current: Long): ArticleBean {
+        return ArticleBean(articleService.getNextArticle(current))
     }
 }
