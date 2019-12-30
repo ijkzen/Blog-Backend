@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
+import java.io.File
 import java.net.URL
 
 /**
@@ -99,6 +100,13 @@ class DeveloperController {
     @GetMapping("/avatar/{id}", produces = [MediaType.IMAGE_JPEG_VALUE])
     fun getAvatar(@PathVariable("id") id: Long): ByteArray {
         val developer = developerService.searchDeveloperById(id)
-        return URL(developer.bio).readBytes()
+        val avatar = File("${id}.jpg")
+        return if (avatar.exists()) {
+            avatar.readBytes()
+        } else {
+            val bytes = URL(developer.bio).readBytes()
+            avatar.writeBytes(bytes)
+            bytes
+        }
     }
 }
