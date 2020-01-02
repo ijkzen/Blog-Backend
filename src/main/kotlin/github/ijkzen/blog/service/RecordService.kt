@@ -10,6 +10,9 @@ import org.hibernate.Session
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.web.method.HandlerMethod
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
 import ua_parser.Parser
 import java.math.BigInteger
 import java.util.*
@@ -18,6 +21,7 @@ import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
+
 
 @Service
 class RecordService {
@@ -32,7 +36,21 @@ class RecordService {
     @PersistenceContext
     private lateinit var entityManager: EntityManager
 
+    @Autowired
+    private lateinit var handlerMapping: RequestMappingHandlerMapping
+
     private val logger = LoggerFactory.getLogger(javaClass)
+
+    private val urlList = ArrayList<String>()
+
+    init {
+        val map: Map<RequestMappingInfo, HandlerMethod> = handlerMapping.handlerMethods
+        map.forEach {
+            it.key.patternsCondition.patterns.forEach {
+                urlList.add(it)
+            }
+        }
+    }
 
     @Transactional
     fun saveRecord(request: HttpServletRequest) {
@@ -72,7 +90,7 @@ class RecordService {
                 httpMethod = method
             )
 
-            if (ip != null && isIP(record.ip) && url != "/") {
+            if (ip != null && isIP(record.ip) && checkUrl(url)) {
                 save(record)
             }
         }
@@ -127,5 +145,9 @@ class RecordService {
 
     fun getRecordByIp(ip: String): Optional<RequestRecord> {
         return recordRepository.findFirstByIpAndCityNotContaining(ip)
+    }
+
+    fun checkUrl(url: String): Boolean {
+        return urlList.contains(url)
     }
 }
