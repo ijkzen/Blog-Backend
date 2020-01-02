@@ -43,11 +43,13 @@ class RecordService {
 
     private val urlList = ArrayList<String>()
 
-    init {
-        val map: Map<RequestMappingInfo, HandlerMethod> = handlerMapping.handlerMethods
-        map.forEach {
-            it.key.patternsCondition.patterns.forEach {
-                urlList.add(it)
+    fun initUrls() {
+        if (urlList.isEmpty()) {
+            val map: Map<RequestMappingInfo, HandlerMethod> = handlerMapping.handlerMethods
+            map.forEach {
+                it.key.patternsCondition.patterns.forEach { url ->
+                    urlList.add(url)
+                }
             }
         }
     }
@@ -55,6 +57,7 @@ class RecordService {
     @Transactional
     fun saveRecord(request: HttpServletRequest) {
         val parser = Parser()
+        initUrls()
         if (!request.getHeader(USER_AGENT).isNullOrEmpty()) {
             val client = parser.parse(request.getHeader(USER_AGENT))
             val operatingSystem = client.os.family
