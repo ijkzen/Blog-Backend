@@ -10,9 +10,6 @@ import org.hibernate.Session
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.web.method.HandlerMethod
-import org.springframework.web.servlet.mvc.method.RequestMappingInfo
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
 import ua_parser.Parser
 import java.math.BigInteger
 import java.util.*
@@ -36,28 +33,13 @@ class RecordService {
     @PersistenceContext
     private lateinit var entityManager: EntityManager
 
-    @Autowired
-    private lateinit var handlerMapping: RequestMappingHandlerMapping
-
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val urlList = ArrayList<String>()
 
-    fun initUrls() {
-        if (urlList.isEmpty()) {
-            val map: Map<RequestMappingInfo, HandlerMethod> = handlerMapping.handlerMethods
-            map.forEach {
-                it.key.patternsCondition.patterns.forEach { url ->
-                    urlList.add(url)
-                }
-            }
-        }
-    }
-
     @Transactional
     fun saveRecord(request: HttpServletRequest) {
         val parser = Parser()
-        initUrls()
         if (!request.getHeader(USER_AGENT).isNullOrEmpty()) {
             val client = parser.parse(request.getHeader(USER_AGENT))
             val operatingSystem = client.os.family
@@ -92,8 +74,8 @@ class RecordService {
                 url = url,
                 httpMethod = method
             )
-
-            if (ip != null && isIP(record.ip) && checkUrl(url)) {
+//            logger.info(record.toString())
+            if (ip != null && isIP(record.ip)) {
                 save(record)
             }
         }
@@ -148,9 +130,5 @@ class RecordService {
 
     fun getRecordByIp(ip: String): Optional<RequestRecord> {
         return recordRepository.findFirstByIpAndCityNotContaining(ip)
-    }
-
-    fun checkUrl(url: String): Boolean {
-        return urlList.contains(url)
     }
 }
