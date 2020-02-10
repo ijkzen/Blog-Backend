@@ -52,6 +52,26 @@ class ArticleService {
 
     private var oss: OSS? = null
 
+    private var metaPattern: Pattern? = null
+
+    private var imagePattern: Pattern? = null
+
+    private fun getMetaPattern(): Pattern {
+        if (metaPattern == null) {
+            val regex = "---[\\s\\S]*---"
+            metaPattern = Pattern.compile(regex)
+        }
+        return metaPattern!!
+    }
+
+    private fun getImagePattern(): Pattern {
+        if (imagePattern == null) {
+            val regex = "!\\[.*?]\\(\\.\\./assets/images.*?\\)"
+            imagePattern = Pattern.compile(regex)
+        }
+        return imagePattern!!
+    }
+
     fun completeAll() {
         val list = ossRepository.findByInUseIsTrue()
         logger.info("oss size: ${list?.size}")
@@ -204,8 +224,7 @@ class ArticleService {
 
     private fun getMeta(markdown: String): String? {
         var result: String? = null
-        val regex = "---[\\s\\S]*---"
-        val pattern = Pattern.compile(regex)
+        val pattern = getMetaPattern()
         val matcher = pattern.matcher(markdown)
 
         if (matcher.find()) {
@@ -227,8 +246,7 @@ class ArticleService {
 //    ![数组图解](../assets/images/2019/09/17/strassen_first.jpg)
     fun replaceUrl(markdown: String): String {
         var tmp = markdown
-        val regex = "!\\[.*?]\\(\\.\\./assets/images.*?\\)"
-        val pattern = Pattern.compile(regex)
+        val pattern = getImagePattern()
         val matcher = pattern.matcher(markdown)
         val cdn = if (oss == null) DOMAIN else oss!!.cdnDomain
         while (matcher.find()) {
